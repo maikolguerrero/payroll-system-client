@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        principalAzul: '008DEB',
+        principalAzul: '#008DEB',
         principalAzulTono2: '#0080D4',
         principalAzulTono5: '#00426F',
         white: '#ffffff', 

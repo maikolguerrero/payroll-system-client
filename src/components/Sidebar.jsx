@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 import {
   FiHome,
   FiCalendar,
@@ -7,43 +7,45 @@ import {
   FiSettings,
   FiClipboard,
   FiDollarSign,
-  FiCheckCircle,
   FiBriefcase,
   FiLayers,
   FiFileText,
-  FiUser,
-  FiBriefcase as FiBriefcaseIcon // Icono de empresa
-} from "react-icons/fi";
-import paths from "../config/routePaths";
-
-const user = {
-  profileImage: null, // URL de la imagen de perfil del usuario, null si no tiene
-  name: "Nombre del Usuario",
-  username: "@username",
-};
+  FiBriefcase as FiBriefcaseIcon,
+  FiX
+} from 'react-icons/fi';
+import UserProfileDropdown from './UserProfileDropdown';
+import paths from '../config/routePaths';
 
 const company = {
-  logo: null, // URL del logo de la empresa, null si no tiene
-  name: "Nombre de la Empresa",
+  logo: null,
+  name: 'Nombre de la Empresa',
 };
 
-export default function MySidebar() {
+const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   return (
     <aside
-      className="shadow-lg top-0 left-0 z-40 w-72 h-full"
+      className={`fixed top-0 left-0 z-40 w-56 h-full transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 shadow-lg`}
       aria-label="Sidebar"
     >
-      <div className="h-full flex flex-col justify-between px-3 py-4 overflow-y-auto bg-principalAzulTono5 text-white">
+      <div className="h-full flex flex-col justify-between px-2 py-4 bg-principalAzulTono5 text-white scrollbar-hidden">
         <div>
-          <h2 className="text-2xl font-bold mb-6">Payroll System</h2>
-          <ul className="space-y-2 font-medium">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold mb-4 mt-4">Payroll System</h2>
+            <button
+              className={`text-white p-2 md:hidden ${isSidebarOpen ? 'block' : 'hidden'}`}
+              onClick={toggleSidebar}
+            >
+              <FiX className="w-4 h-4" />
+            </button>
+          </div>
+          <ul className="space-y-1 text-xs font-medium">
             <li>
               <NavLink
                 to={paths.DASHBOARD_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiHome className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiHome className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Dashboard
                 </span>
               </NavLink>
@@ -53,8 +55,8 @@ export default function MySidebar() {
                 to={paths.PAYROLL_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiDollarSign className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiDollarSign className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Nóminas
                 </span>
               </NavLink>
@@ -64,8 +66,8 @@ export default function MySidebar() {
                 to={paths.EMPLOYEES_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiUsers className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiUsers className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Empleados
                 </span>
               </NavLink>
@@ -75,8 +77,8 @@ export default function MySidebar() {
                 to={paths.DEPARTMENTS_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiLayers className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiLayers className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Departamentos
                 </span>
               </NavLink>
@@ -86,8 +88,8 @@ export default function MySidebar() {
                 to={paths.POSITIONS_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiBriefcase className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiBriefcase className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Cargos
                 </span>
               </NavLink>
@@ -97,8 +99,8 @@ export default function MySidebar() {
                 to={paths.REPORTS_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiFileText className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiFileText className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Reportes
                 </span>
               </NavLink>
@@ -108,8 +110,8 @@ export default function MySidebar() {
                 to={paths.PERCEPTIONS_DEDUCTIONS_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiClipboard className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiClipboard className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Percepciones y Deducciones
                 </span>
               </NavLink>
@@ -119,8 +121,8 @@ export default function MySidebar() {
                 to={paths.ATTENDANCES_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiCalendar className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiCalendar className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Asistencias
                 </span>
               </NavLink>
@@ -130,8 +132,8 @@ export default function MySidebar() {
                 to={paths.BANKS_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiBarChart2 className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiBarChart2 className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Bancos
                 </span>
               </NavLink>
@@ -141,8 +143,8 @@ export default function MySidebar() {
                 to={paths.SETTINGS_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
-                <FiSettings className="flex-shrink-0 w-5 h-5 text-white transition duration-75 group-hover:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">
+                <FiSettings className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
                   Configuración
                 </span>
               </NavLink>
@@ -153,44 +155,27 @@ export default function MySidebar() {
           <div className="flex items-center mb-4">
             <NavLink
               to={paths.COMPANY_SETTINGS_PATH}
-              className="flex items-center"
+              className="flex items-center rounded-full p-2 hover:bg-principalAzul"
             >
               {company.logo ? (
                 <img
                   src={company.logo}
                   alt="Company Logo"
-                  className="w-10 h-10 rounded-full"
+                  className="w-6 h-6 rounded-full"
                 />
               ) : (
-                <FiBriefcaseIcon className="w-10 h-10 text-white" />
+                <FiBriefcaseIcon className="w-6 h-6 text-white" />
               )}
-              <span className="ml-3 text-lg font-semibold">{company.name}</span>
+              <span className="ml-2 text-xs font-semibold">{company.name}</span>
             </NavLink>
           </div>
           <div className="flex items-center">
-            <NavLink
-              to={paths.USER_PROFILE_PATH}
-              className="flex items-center"
-            >
-              {user.profileImage ? (
-                <img
-                  src={user.profileImage}
-                  alt="User Profile"
-                  className="w-8 h-8 rounded-full"
-                />
-              ) : (
-                <FiUser className="w-10 h-10 text-white rounded-full" />
-              )}
-              <div className="ml-3">
-                <span className="block text-lg font-semibold">{user.name}</span>
-                <span className="block text-sm">
-                  {user.username}
-                </span>
-              </div>
-            </NavLink>
+            <UserProfileDropdown />
           </div>
         </div>
       </div>
     </aside>
   );
-}
+};
+
+export default Sidebar;
