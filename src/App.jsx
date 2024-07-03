@@ -1,19 +1,5 @@
-// import Sidebar from "./components/Sidebar";
-// import { Route, Routes, Navigate } from "react-router-dom";
 
-// export default function App() {
-//   return (
-//     <>
-//      <Routes>
-//           <Route index element={<Sidebar />} />
-
-//           <Route path="*" element={<h1>Error 404</h1>} />
-//         </Routes>
-//     </>
-//   )
-// }
-
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./components/Sidebar_";
 import { Route, Routes, Navigate } from "react-router-dom";
 import paths from "./config/routePaths";
 import Dashboard from "./views/Dashboard";
