@@ -1,3 +1,4 @@
+import Login from "./views/Login";
 import Register from "./views/Register";
 import Sidebar from "./components/Sidebar";
 import { Route, Routes, Navigate } from "react-router-dom";
@@ -18,6 +19,7 @@ import UserProfile from "./views/UserProfile";
 export default function App() {
   return (
     <>
+    <Login/>
     <Register />
       <div className="flex flex-1">
         <Sidebar />
