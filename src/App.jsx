@@ -1,4 +1,4 @@
-
+import Register from "./views/Register";
 import Sidebar from "./components/Sidebar";
 import { Route, Routes, Navigate } from "react-router-dom";
 import paths from "./config/routePaths";
@@ -18,8 +18,10 @@ import UserProfile from "./views/UserProfile";
 export default function App() {
   return (
     <>
+    <Register />
       <div className="flex flex-1">
         <Sidebar />
+        
         <Routes>
           <Route index element={<Dashboard />} />
           <Route path={paths.DASHBOARD_PATH} element={<Dashboard />} />
