@@ -1,5 +1,6 @@
 import Login from "./views/Login";
 import Register from "./views/Register";
+import CompanyRegister from "./views/CompanyRegister";
 import Sidebar from "./components/Sidebar";
 import { Route, Routes, Navigate } from "react-router-dom";
 import paths from "./config/routePaths";
@@ -19,6 +20,7 @@ import UserProfile from "./views/UserProfile";
 export default function App() {
   return (
     <>
+    <CompanyRegister />
     <Login/>
     <Register />
       <div className="flex flex-1">
