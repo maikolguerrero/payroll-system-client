@@ -13,6 +13,7 @@ import Banks from './views/Banks';
 import Settings from './views/Settings';
 import CompanySettings from './views/CompanySettings';
 import UserProfile from './views/UserProfile';
+import Users from './views/admin/Users';
 import paths from './config/routePaths';
 import {
   FiMenu,
@@ -54,6 +55,7 @@ export default function App() {
           <Route path={paths.SETTINGS_PATH} element={<Settings />} />
           <Route path={paths.COMPANY_SETTINGS_PATH} element={<CompanySettings />} />
           <Route path={paths.USER_PROFILE_PATH} element={<UserProfile />} />
+          <Route path={paths.USERS_PATH} element={<Users />} />
           <Route path="*" element={<h1>Error 404</h1>} />
         </Routes>
       </main>
