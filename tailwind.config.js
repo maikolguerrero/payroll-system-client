@@ -9,6 +9,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'mobile': { 'max': '640px' },
+      },
       colors: {
         principalAzul: '#008DEB',
         principalAzulTono2: '#0080D4',
