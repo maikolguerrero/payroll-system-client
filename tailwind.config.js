@@ -14,7 +14,10 @@ export default {
       },
       colors: {
         principalAzul: '#008DEB',
+        principalAzulTono1: '#0094F6',
         principalAzulTono2: '#0080D4',
+        principalAzulTono3: '#006BB3',
+        principalAzulTono4: '#005791',
         principalAzulTono5: '#00426F',
         white: '#ffffff',
         black: '#000000',
