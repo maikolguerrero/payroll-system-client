@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   FiHome,
   FiCalendar,
@@ -15,19 +15,33 @@ import {
 } from 'react-icons/fi';
 import UserProfileDropdown from './UserProfileDropdown';
 import paths from '../config/routePaths';
+import { useEffect } from 'react';
+
+// Simulación de datos de usuario
+const currentUser = {
+  isAdminPrincipal: true // Cambia esto a `false` para probar el comportamiento
+};
 
 const company = {
   logo: null,
   name: 'Nombre de la Empresa',
 };
 
-const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
+export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (isSidebarOpen) {
+      toggleSidebar();
+    }
+  }, [location.pathname]);
+
   return (
     <aside
-      className={`fixed top-0 left-0 z-40 w-56 h-full transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 shadow-lg`}
+      className={`fixed top-0 left-0 z-40 h-full transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 shadow-lg w-56 md:w-56 bg-principalAzulTono5 text-white ${isSidebarOpen ? 'w-full' : 'md:w-56'}`}
       aria-label="Sidebar"
     >
-      <div className="h-full flex flex-col justify-between px-2 py-4 bg-principalAzulTono5 text-white scrollbar-hidden">
+      <div className="h-full flex flex-col justify-between px-2 bg-principalAzulTono5 text-white scrollbar-hidden">
         <div>
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold mb-4 mt-4">Payroll System</h2>
@@ -35,7 +49,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
               className={`text-white p-2 md:hidden ${isSidebarOpen ? 'block' : 'hidden'}`}
               onClick={toggleSidebar}
             >
-              <FiX className="w-4 h-4" />
+              <FiX className="w-6 h-6" />
             </button>
           </div>
           <ul className="space-y-1 text-xs font-medium">
@@ -149,13 +163,40 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </span>
               </NavLink>
             </li>
+            {currentUser.isAdminPrincipal && (
+              <>
+                <div className="border-t border-principalAzulTono2"></div>
+                <li>
+                  <NavLink
+                    to={paths.USERS_PATH}
+                    className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
+                  >
+                    <FiUsers className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                    <span className="flex-1 ml-2 whitespace-nowrap">
+                      Usuarios
+                    </span>
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to={paths.COMPANY_SETTINGS_PATH}
+                    className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
+                  >
+                    <FiBriefcase className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                    <span className="flex-1 ml-2 whitespace-nowrap">
+                      Configuración de Empresa
+                    </span>
+                  </NavLink>
+                </li></>
+
+            )}
           </ul>
         </div>
-        <div className="border-t border-principalAzulTono2 mt-4 pt-4">
-          <div className="flex items-center mb-4">
-            <NavLink
-              to={paths.COMPANY_SETTINGS_PATH}
-              className="flex items-center rounded-full p-2 hover:bg-principalAzul"
+        <div className="border-t border-principalAzulTono2 mt-2 pt-2">
+          <div className="flex items-center mb-2">
+            <div
+              className="flex items-center rounded-full px-2"
             >
               {company.logo ? (
                 <img
@@ -167,9 +208,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 <FiBriefcaseIcon className="w-6 h-6 text-white" />
               )}
               <span className="ml-2 text-xs font-semibold">{company.name}</span>
-            </NavLink>
+            </div>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center pb-4">
             <UserProfileDropdown />
           </div>
         </div>
@@ -177,5 +218,3 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     </aside>
   );
 };
-
-export default Sidebar;

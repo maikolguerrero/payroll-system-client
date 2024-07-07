@@ -36,7 +36,7 @@ export default function SearchBar({ placeholder, onSearch }) {
           type="search"
           id="default-search"
           name="search"
-          className="block w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-principalAzulTono5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-principalAzulTono5"
+          className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-principalAzulTono5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-principalAzulTono5"
           placeholder={placeholder}
           required
         />
