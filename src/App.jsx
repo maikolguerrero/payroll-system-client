@@ -48,9 +48,9 @@ export default function App() {
 
   return (
     <>
-      <Login />
+      {/* <Login />
       <Register />
-      <CompanyRegister />
+      <CompanyRegister /> */}
       <div className="flex h-screen bg-principalAzul">
         {/* Botón de menú hamburguesa fuera del sidebar */}
         <button
