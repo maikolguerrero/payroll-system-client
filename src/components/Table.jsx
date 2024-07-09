@@ -8,11 +8,11 @@ export default function Table({ columns, data, onEdit, onDelete }) {
         <thead className="text-xs text-white uppercase bg-principalAzulTono5">
           <tr>
             {columns.map((column, index) => (
-              <th key={index} scope="col" className="px-6 py-3">
+              <th key={index} scope="col" className="px-4 py-3">
                 {column.label}
               </th>
             ))}
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3">
               <span className="sr-only">Actions</span>
             </th>
           </tr>
@@ -24,11 +24,11 @@ export default function Table({ columns, data, onEdit, onDelete }) {
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
             >
               {columns.map((column, colIndex) => (
-                <td key={colIndex} className="px-6 py-4">
+                <td key={colIndex} className="px-4 py-4">
                   {item[column.accessor]}
                 </td>
               ))}
-              <td className="px-6 py-4 text-right flex space-x-4 justify-end">
+              <td className="px-4 py-4 text-right flex space-x-4 justify-end">
                 <button
                   onClick={() => onEdit(item)}
                   className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
