@@ -9,12 +9,23 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'mobile': { 'max': '640px' },
+      },
       colors: {
         principalAzul: '#008DEB',
+        principalAzulTono1: '#0094F6',
         principalAzulTono2: '#0080D4',
+        principalAzulTono3: '#006BB3',
+        principalAzulTono4: '#005791',
         principalAzulTono5: '#00426F',
-        white: '#ffffff', 
+        white: '#ffffff',
         black: '#000000',
+      },
+      fontFamily: {
+        nunito: ['Nunito', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
+        'roboto-serif': ['Roboto Serif', 'serif'],
       },
     },
   },
@@ -22,4 +33,3 @@ export default {
     flowbite.plugin(),
   ],
 }
-

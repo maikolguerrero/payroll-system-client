@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FiUser, FiChevronUp } from 'react-icons/fi';
 import paths from '../config/routePaths';
@@ -11,13 +11,27 @@ const user = {
 
 export default function UserProfileDropdown() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative text-white">
+    <div className="relative text-white" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
         className="flex items-center text-xs font-medium rounded-full p-1 hover:bg-principalAzul"
