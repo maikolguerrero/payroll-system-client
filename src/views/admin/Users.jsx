@@ -95,7 +95,9 @@ export default function Users() {
   return (
     <div className="p-4">
       <h1 className="text-2xl text-white font-bold mb-4 text-left">Usuarios</h1>
-      <SearchBar placeholder="Buscar usuarios..." onSearch={handleSearch} />
+      <div className="mb-4">
+        <SearchBar placeholder="Buscar usuarios..." onSearch={handleSearch} />
+      </div>
       <Table columns={columns} data={currentItems} onEdit={openEditModal} onDelete={openDeleteModal} />
       <Pagination
         currentPage={currentPage}

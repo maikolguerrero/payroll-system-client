@@ -5,8 +5,8 @@ export default function Modal({ isOpen, onClose, title, children }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-[10px] drop-shadow-[25px_40px_rgba(0,66,111,0.25)] w-4/6 max-h-full max-w-4xl overflow-y-auto transform translate-x-16">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-2">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-80 relative p-4 w-full max-w-2xl max-h-full">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-red-700"

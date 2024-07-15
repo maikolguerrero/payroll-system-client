@@ -1,19 +1,24 @@
 import React from 'react';
 
-export default function SearchBar({ placeholder, onSearch }) {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const query = formData.get('search');
-    onSearch(query);
-  };
+export default function SearchBar({ placeholder, onSearch, handleSubmit }) {
+  let handle_submit;
+  if (handleSubmit == null) {
+    handle_submit = (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const query = formData.get('search');
+      onSearch(query);
+    };
+  } else {
+    handle_submit = handleSubmit;
+  }
 
   return (
-    <form className="flex items-center mb-4" onSubmit={handleSubmit}>
+    <form className="flex items-center" onSubmit={handle_submit}>
       <label htmlFor="default-search" className="sr-only">
         Search
       </label>
-      <div className="relative w-full max-w-md">
+      <div className="relative w-80 max-w-md">
         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
           <svg
             className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -36,7 +41,7 @@ export default function SearchBar({ placeholder, onSearch }) {
           type="search"
           id="default-search"
           name="search"
-          className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-principalAzulTono5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-principalAzulTono5"
+          className="block w-full p-2 ps-10 pe-16 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-principalAzulTono5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-principalAzulTono5"
           placeholder={placeholder}
           required
         />
