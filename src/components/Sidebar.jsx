@@ -44,7 +44,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
       <div className="h-full flex flex-col justify-between px-2 bg-principalAzulTono5 text-white scrollbar-hidden">
         <div>
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold mb-4 mt-4">Payroll System</h2>
+            <h2 className="text-lg font-bold mb-4 ml-5 mt-4">Payroll System</h2>
             <button
               className={`text-white p-2 md:hidden ${isSidebarOpen ? 'block' : 'hidden'}`}
               onClick={toggleSidebar}
