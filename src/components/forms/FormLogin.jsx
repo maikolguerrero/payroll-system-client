@@ -1,10 +1,9 @@
-import React from 'react';
+import React from "react";
 
 export default function FormLogin() {
-
   return (
-    <div className="flex items-center justify-center flex-grow w-full max-w-md relative md:mt-24">
-      <div className="bg-white p-8 rounded-[10px] drop-shadow-[25px_40px_rgba(0,66,111,0.25)] w-full max-w-lg">
+    <div className="flex items-center justify-center flex-grow w-full relative">
+      <div className="bg-white p-8 rounded-[10px] drop-shadow-[25px_40px_rgba(0,66,111,0.25)] w-full max-w-md 2xl:max-w-lg xs:mx-6 xl:mt-20">
         <h2 className="text-2xl font-semibold mb-6">Iniciar Sesión</h2>
         <form>
           {/* Campo Username */}
@@ -49,5 +48,5 @@ export default function FormLogin() {
         </form>
       </div>
     </div>
-  )
+  );
 }

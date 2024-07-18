@@ -2,8 +2,8 @@ import React from 'react';
 
 const FormEmployees = ({ employee }) => {
   return (
-    <form className="grid grid-cols-1 md:grid-cols-2">
-      <div className="mb-4 flex justify-center">
+    <form className="grid md:grid-cols-2 justify-center">
+      <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
           <label htmlFor="firstName" className="block text-sm font-medium mb-2">
             Nombres
@@ -31,7 +31,7 @@ const FormEmployees = ({ employee }) => {
         </div>
       </div>
 
-      <div className="mb-4 flex justify-center">
+      <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
           <label htmlFor="department" className="block text-sm font-medium mb-2">
             Departamento
@@ -67,7 +67,7 @@ const FormEmployees = ({ employee }) => {
         </div>
       </div>
 
-      <div className="mb-4 flex justify-center">
+      <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
           <label htmlFor="baseSalary" className="block text-sm font-medium mb-2">
             Salario Base
@@ -95,7 +95,7 @@ const FormEmployees = ({ employee }) => {
         </div>
       </div>
 
-      <div className="mb-4 flex justify-center">
+      <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
           <label htmlFor="startDate" className="block text-sm font-medium mb-2">
             Fecha de Ingreso
@@ -123,7 +123,7 @@ const FormEmployees = ({ employee }) => {
         </div>
       </div>
 
-      <div className="mb-4 flex justify-center">
+      <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
           <label htmlFor="idNumber" className="block text-sm font-medium mb-2">
             Cédula de Identidad
@@ -155,7 +155,7 @@ const FormEmployees = ({ employee }) => {
         </div>
       </div>
 
-      <div className="mb-4 flex justify-center">
+      <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
           <label htmlFor="email" className="block text-sm font-medium mb-2">
             Correo electrónico

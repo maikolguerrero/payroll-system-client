@@ -2,8 +2,8 @@ import React from 'react';
 
 export default function FormCompanyRegister() {
   return (
-    <div className="flex items-center justify-center flex-grow w-full max-w-4xl relative mt-24 sm:mt-32 md:mt-24">
-      <div className="bg-white p-8 rounded-[28px] drop-shadow-[25px_40px_rgba(0,66,111,0.25)] w-full max-w-4xl">
+    <div className="flex items-center justify-center flex-grow w-full relative">
+      <div className="bg-white p-8 xs:p-4 rounded-[28px] drop-shadow-[25px_40px_rgba(0,66,111,0.25)] w-full max-w-4xl xs:max-h-xl mt-8 xs:mx-6">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Registro de la empresa
         </h2>
@@ -19,7 +19,7 @@ export default function FormCompanyRegister() {
             <input
               type="text"
               id="name"
-              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-3 text-gray-800 leading-tight bg-gray-300 mobile:w-full sm:w-full md:w-10/12"
+              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-3 text-gray-800 leading-tight bg-gray-300 w-full md:w-10/12"
             />
           </div>
 
@@ -34,7 +34,7 @@ export default function FormCompanyRegister() {
             <input
               type="text"
               id="address"
-              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-3 text-gray-800 leading-tight bg-gray-300 mobile:w-full sm:w-full md:w-10/12"
+              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-3 text-gray-800 leading-tight bg-gray-300  w-full md:w-10/12"
             />
           </div>
 
@@ -49,7 +49,7 @@ export default function FormCompanyRegister() {
             <input
               type="text"
               id="country"
-              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-3 text-gray-800 leading-tight bg-gray-300 mobile:w-full sm:w-full md:w-10/12"
+              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-3 text-gray-800 leading-tight bg-gray-300  w-full md:w-10/12"
             />
           </div>
 
@@ -64,7 +64,7 @@ export default function FormCompanyRegister() {
             <input
               type="text"
               id="currency"
-              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-3 text-gray-800 leading-tight bg-gray-300 mobile:w-full sm:w-full md:w-10/12"
+              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-3 text-gray-800 leading-tight bg-gray-300 w-full md:w-10/12"
             />
           </div>
 

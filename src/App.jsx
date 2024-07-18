@@ -160,7 +160,7 @@ export default function App() {
         )}
 
         <main
-          className={`flex-1 overflow-y-auto transition-transform duration-300 ease-in-out ${isSidebarOpen && !isDisableSidebar ? 'ml-56 p-4 md:ml-56' : 'ml-0 pb-16'} ${isDisableSidebar ? '' : 'md:ml-56'}`}
+          className={`flex-1 overflow-y-auto transition-transform duration-300 ease-in-out ${isSidebarOpen && !isDisableSidebar ? 'ml-56 p-4 md:ml-56' : 'ml-0'} ${isDisableSidebar ? '' : 'md:ml-56'}`}
         >
           <Routes>
             <Route index element={<Dashboard />} />
