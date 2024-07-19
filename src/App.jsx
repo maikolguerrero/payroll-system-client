@@ -112,6 +112,7 @@ import { FiMenu } from "react-icons/fi";
 import Login from "./views/Login";
 import Register from "./views/Register";
 import CompanyRegister from "./views/CompanyRegister";
+import ProtectedRoute from './auth/ProtectedRoute';
 
 export default function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
@@ -163,20 +164,20 @@ export default function App() {
           className={`flex-1 overflow-y-auto transition-transform duration-300 ease-in-out ${isSidebarOpen && !isDisableSidebar ? 'ml-56 p-4 md:ml-56' : 'ml-0 pb-16'} ${isDisableSidebar ? '' : 'md:ml-56'}`}
         >
           <Routes>
-            <Route index element={<Dashboard />} />
-            <Route path={paths.DASHBOARD_PATH} element={<Dashboard />} />
-            <Route path={paths.PAYROLL_PATH} element={<Payroll />} />
-            <Route path={paths.EMPLOYEES_PATH} element={<Employees />} />
-            <Route path={paths.DEPARTMENTS_PATH} element={<Departments />} />
-            <Route path={paths.POSITIONS_PATH} element={<Positions />} />
-            <Route path={paths.REPORTS_PATH} element={<Reports />} />
-            <Route path={paths.PERCEPTIONS_DEDUCTIONS_PATH} element={<PerceptionsDeductions />} />
-            <Route path={paths.ATTENDANCES_PATH} element={<Attendances />} />
-            <Route path={paths.BANKS_PATH} element={<Banks />} />
-            <Route path={paths.SETTINGS_PATH} element={<Settings />} />
-            <Route path={paths.COMPANY_SETTINGS_PATH} element={<CompanySettings />} />
-            <Route path={paths.USER_PROFILE_PATH} element={<UserProfile />} />
-            <Route path={paths.USERS_PATH} element={<Users />} />
+            <Route index element={<ProtectedRoute adminComponent={Dashboard} />} />
+            <Route path={paths.DASHBOARD_PATH} element={<ProtectedRoute adminComponent={Dashboard} />} />
+            <Route path={paths.PAYROLL_PATH} element={<ProtectedRoute adminComponent={Payroll} />} />
+            <Route path={paths.EMPLOYEES_PATH} element={<ProtectedRoute adminComponent={Employees} />} />
+            <Route path={paths.DEPARTMENTS_PATH} element={<ProtectedRoute adminComponent={Departments} />} />
+            <Route path={paths.POSITIONS_PATH} element={<ProtectedRoute adminComponent={Positions} />} />
+            <Route path={paths.REPORTS_PATH} element={<ProtectedRoute adminComponent={Reports} />} />
+            <Route path={paths.PERCEPTIONS_DEDUCTIONS_PATH} element={<ProtectedRoute adminComponent={PerceptionsDeductions} />} />
+            <Route path={paths.ATTENDANCES_PATH} element={<ProtectedRoute adminComponent={Attendances} />} />
+            <Route path={paths.BANKS_PATH} element={<ProtectedRoute adminComponent={Banks} />} />
+            <Route path={paths.SETTINGS_PATH} element={<ProtectedRoute adminComponent={Settings} />} />
+            <Route path={paths.COMPANY_SETTINGS_PATH} element={<ProtectedRoute adminComponent={CompanySettings} />} />
+            <Route path={paths.USER_PROFILE_PATH} element={<ProtectedRoute adminComponent={UserProfile} />} />
+            <Route path={paths.USERS_PATH} element={<ProtectedRoute adminComponent={Users} />} />
 
             <Route path={paths.COMPANY_REGISTER_PATH} element={<CompanyRegister />} />
             <Route path={paths.LOGIN_PATH} element={<Login />} />
