@@ -3,6 +3,7 @@ import paths from '../../config/routePaths';
 import formValidation from '../../validations/formValidation';
 import { Contexto } from '../../context/Contexto';
 import { useNavigate } from 'react-router-dom';
+import { alertBasic, alertError, alertInfo } from '../alerts/alerts';
 
 export default function FormLogin() {
   const { peticionPost, setToken, setUser } = useContext(Contexto)
@@ -28,16 +29,17 @@ export default function FormLogin() {
     const validatePassword = formValidation.validateText(values.password);
 
     // Asignar mensajes si se llena mal el campo
-    if (!validatePassword) alert('Por favor ingrese su Contraseña.')
-    if (!validateUsername) alert('Por favor ingrese un Usuario.')
+    if (!validateUsername) return alertInfo('Por favor ingrese un Usuario.')
+    if (!validatePassword) return alertInfo('Por favor ingrese su Contraseña.')
 
     const respuesta = await peticionPost("http://localhost:3000/api/users/login", "POST", values)
-    if (!respuesta.error) {
+    if (respuesta.token) {
       setToken(respuesta.token);
       setUser(respuesta.result);
+      alertBasic("Inicio de Sesión Exitoso")
       return navigate(paths.DASHBOARD_PATH);
     } else {
-      alert("Error en el Inicio de Sesion (verifique sus datos)");
+      alertError("Datos Erroneos para Iniciar Sesion")
       return setValues({
         username: "",
         password: "",
@@ -62,7 +64,7 @@ export default function FormLogin() {
               type="text"
               id="username"
               name='username'
-              value={values.name}
+              value={values.username}
               onChange={handleInputChange}
               className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
             />

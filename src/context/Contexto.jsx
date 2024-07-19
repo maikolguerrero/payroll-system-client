@@ -6,6 +6,7 @@ export function ContextoProvider(props) {
 
   const [token, setToken] = useState(null)
   const [user, setUser] = useState(null)
+  const [users, setUsers] = useState([])
   
   const peticionPost = async (url, metodo, contenido) => {
     try {
@@ -29,13 +30,59 @@ export function ContextoProvider(props) {
     }
   };
 
+  const peticionGet = async (url, metodo) => {
+    try {
+      const response = await fetch(url, {
+        method: metodo,
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          "Authorization": `Bearer ${token}`,
+        },
+      })
+  
+      if (!response.ok) {
+        const { error } = await response.json();
+        return { error };
+      }
+      
+      return response.json();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const peticionDelete = async (url, metodo) => {
+    try {
+      const response = await fetch(url, {
+        method: metodo,
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          "Authorization": `Bearer ${token}`,
+        },
+      })
+  
+      if (!response.ok) {
+        const { error } = await response.json();
+        return { error };
+      }
+      
+      return response.json();
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return (
     <Contexto.Provider value={{
       token,
       setToken,
       peticionPost,
+      peticionGet,
       setUser,
-      user
+      user,
+      setUsers,
+      users,
+      peticionDelete
     }}>
       {props.children}
     </Contexto.Provider>
