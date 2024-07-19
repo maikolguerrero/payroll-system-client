@@ -10,6 +10,7 @@ export default {
   theme: {
     extend: {
       screens: {
+        'xs': { 'max': '540px' },
         'mobile': { 'max': '640px' },
       },
       colors: {

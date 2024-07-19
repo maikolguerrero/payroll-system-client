@@ -1,43 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 
+// Días completos de la semana
+const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+// Componente del formulario para la posición
 const FormPositions = ({ position, onSubmit }) => {
   const [values, setValues] = useState({
-    name: position ? position.nombre : '',
-    description: position ? position.descripcion : '',
-    salary: position ? position.salarioBase : '',
-    hourlyRate: position ? position.horasDiarias : '',
-    daysOfWork: position ? position.diasTrabajo : [],
-    period: position ? position.periodo : '',
+    name: '',
+    description: '',
+    salary: '',
+    hourlyRate: '',
+    daysOfWork: [],
+    period: '',
   });
 
+  // Cargar los valores iniciales si hay una posición proporcionada
+  useEffect(() => {
+    if (position) {
+      setValues({
+        name: position.nombre || '',
+        description: position.descripcion || '',
+        salary: position.salarioBase || '',
+        hourlyRate: position.horasDiarias || '',
+        daysOfWork: Array.isArray(position.diasTrabajo) ? position.diasTrabajo : [],
+        period: position.periodo || '',
+      });
+    } else {
+      setValues({
+        name: '',
+        description: '',
+        salary: '',
+        hourlyRate: '',
+        daysOfWork: [],
+        period: '',
+      });
+    }
+  }, [position]);
+
+  // Manejar cambios en los inputs del formulario
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setValues({
-      ...values,
-      [name]: value,
-    });
-  };
-
-  const handleCheckboxChange = (e) => {
-    const day = e.target.value;
-    const isChecked = e.target.checked;
-
-    if (isChecked) {
-      setValues(prevState => ({
-        ...prevState,
-        daysOfWork: [...prevState.daysOfWork, day],
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setValues(prevValues => ({
+        ...prevValues,
+        daysOfWork: checked
+          ? [...prevValues.daysOfWork, value]
+          : prevValues.daysOfWork.filter(day => day !== value),
       }));
     } else {
-      setValues(prevState => ({
-        ...prevState,
-        daysOfWork: prevState.daysOfWork.filter(item => item !== day),
-      }));
+      setValues({ ...values, [name]: value });
     }
   };
 
+  // Manejar la validación y el envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(values);
+    onSubmit({
+      nombre: values.name,
+      descripcion: values.description,
+      salarioBase: values.salary,
+      horasDiarias: values.hourlyRate,
+      diasTrabajo: values.daysOfWork,
+      periodo: values.period,
+    });
   };
 
   return (
@@ -79,6 +104,7 @@ const FormPositions = ({ position, onSubmit }) => {
           name="salary"
           value={values.salary}
           onChange={handleInputChange}
+          min="1"
           className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-11/12 focus:outline-none focus:shadow-outline"
         />
       </div>
@@ -93,6 +119,7 @@ const FormPositions = ({ position, onSubmit }) => {
           name="hourlyRate"
           value={values.hourlyRate}
           onChange={handleInputChange}
+          min="1"
           className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
         />
       </div>
@@ -106,9 +133,10 @@ const FormPositions = ({ position, onSubmit }) => {
           name="period"
           value={values.period}
           onChange={handleInputChange}
+          required
           className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-11/12 focus:outline-none focus:shadow-outline"
         >
-          <option value="">Seleccionar periodo</option>
+          <option value="" disabled>Seleccionar periodo</option>
           <option value="Diario">Diario</option>
           <option value="Semanal">Semanal</option>
           <option value="Mensual">Mensual</option>
@@ -119,15 +147,26 @@ const FormPositions = ({ position, onSubmit }) => {
       <div className="mb-4 col-span-2">
         <h2 className="text-sm font-semibold mb-4">Días de trabajo:</h2>
         <div className="flex flex-wrap gap-2 ml-8">
-          <CheckboxDay label="Lunes" value="Lunes" checked={values.daysOfWork.includes('Lunes')} onChange={handleCheckboxChange} />
-          <CheckboxDay label="Martes" value="Martes" checked={values.daysOfWork.includes('Martes')} onChange={handleCheckboxChange} />
-          <CheckboxDay label="Miércoles" value="Miércoles" checked={values.daysOfWork.includes('Miércoles')} onChange={handleCheckboxChange} />
-          <CheckboxDay label="Jueves" value="Jueves" checked={values.daysOfWork.includes('Jueves')} onChange={handleCheckboxChange} />
+          {daysOfWeek.slice(0, 4).map(day => (
+            <CheckboxDay
+              key={day}
+              label={day}
+              value={day}
+              checked={values.daysOfWork.includes(day)}
+              onChange={handleInputChange}
+            />
+          ))}
         </div>
         <div className="flex flex-wrap gap-2 mt-4 ml-8 md:flex-row">
-          <CheckboxDay label="Viernes" value="Viernes" checked={values.daysOfWork.includes('Viernes')} onChange={handleCheckboxChange} />
-          <CheckboxDay label="Sábado" value="Sábado" checked={values.daysOfWork.includes('Sábado')} onChange={handleCheckboxChange} />
-          <CheckboxDay label="Domingo" value="Domingo" checked={values.daysOfWork.includes('Domingo')} onChange={handleCheckboxChange} />
+          {daysOfWeek.slice(4).map(day => (
+            <CheckboxDay
+              key={day}
+              label={day}
+              value={day}
+              checked={values.daysOfWork.includes(day)}
+              onChange={handleInputChange}
+            />
+          ))}
         </div>
       </div>
 
@@ -143,6 +182,7 @@ const FormPositions = ({ position, onSubmit }) => {
   );
 };
 
+// Componente para los checkboxes de los días de trabajo
 const CheckboxDay = ({ label, value, checked, onChange }) => {
   return (
     <div className="flex items-center">
@@ -150,7 +190,7 @@ const CheckboxDay = ({ label, value, checked, onChange }) => {
       <input
         type="checkbox"
         id={value}
-        name={value}
+        name="daysOfWork"
         value={value}
         checked={checked}
         onChange={onChange}
