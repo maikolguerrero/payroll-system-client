@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FiUser, FiChevronUp } from "react-icons/fi";
 import paths from "../config/routePaths";
 import { Contexto } from "../context/Contexto";
+import { alertBasic } from "./alerts/alerts";
 
 export default function UserProfileDropdown() {
   const { user, setUser, setToken } = useContext(Contexto);
@@ -41,6 +42,7 @@ export default function UserProfileDropdown() {
   const handleLogout = (e) => {
     setUser(null);
     setToken(null);
+    alertBasic("Cierre de Sesión Exitoso")
     navigate(paths.LOGIN_PATH)
   }
 
