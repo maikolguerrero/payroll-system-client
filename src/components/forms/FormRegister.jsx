@@ -3,9 +3,10 @@ import formValidation from '../../validations/formValidation';
 import { Contexto } from '../../context/Contexto';
 import { useNavigate } from 'react-router-dom';
 import paths from '../../config/routePaths';
-import { alertInfo } from '../alerts/alerts';
+import { alertBasic, alertError, alertInfo } from '../alerts/alerts';
 
 export default function FormRegister() {
+  const { peticionPost} = useContext(Contexto)
 
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -39,10 +40,10 @@ export default function FormRegister() {
 
     const respuesta = await peticionPost("http://localhost:3000/api/users/register", "POST", values)
     if (respuesta.message === "Usuario creado exitosamente") {
-      alert(respuesta.message);
+      alertBasic(respuesta.message);
       return navigate(paths.LOGIN_PATH);
     } else {
-      alert("Exisito un error revisa la consola");
+      alertError("Exisito un error revisa la consola");
       return setValues({
         name: "",
         username: "",
