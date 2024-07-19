@@ -1,5 +1,3 @@
-export default function FormLogin() {
-
 import React, { useContext, useState } from 'react';
 import paths from '../../config/routePaths';
 import formValidation from '../../validations/formValidation';
