@@ -1,8 +1,82 @@
-import React from 'react';
+import React, { useContext, useState } from "react";
+import { Contexto } from "../../context/Contexto";
+import formValidation from "../../validations/formValidation";
+import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 
-const FormEmployees = ({ employee }) => {
+const FormEmployees = ({ employee, onClose }) => {
+  const { departmentsData, positionsData, peticionPost } = useContext(Contexto);
+
+  const [values, setValues] = useState({
+    ci: employee ? employee.ci : "",
+    name: employee ? employee.name : "",
+    surnames: employee ? employee.surnames : "",
+    address: employee ? employee.address : "",
+    phone: employee ? employee.phone : "",
+    email: employee ? employee.email : "",
+    birthdate: employee ? employee.birthdate : "",
+    base_salary: employee ? employee.base_salary : "",
+    gender: employee ? employee.gender : "",
+    hire_date: employee ? employee.hire_date : "",
+    department_id: employee ? employee.department_id : "",
+    position_id: employee ? employee.position_id : "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
+  const validation = () => {
+    for (let key in values) {
+      let error = formValidation.validateText(values[key].toString());
+      if (!error) return "Completa todos los datos";
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validate = validation();
+    if (validate) alertInfo(validate);
+
+    if (employee) {
+      const respuesta = await peticionPost(
+        `http://localhost:3000/api/employees/${employee._id}`,
+        "PUT",
+        values
+      );
+      if (respuesta.message) {
+        alertConfirm(respuesta.message);
+        /*onSubmit()*/
+        return onClose();
+      } else {
+        alert("Existio un error revisa la consola");
+        return console.log(respuesta);
+      }
+    } else {
+      const respuesta = await peticionPost(
+        "http://localhost:3000/api/employees",
+        "POST",
+        values
+      );
+      if (respuesta.message) {
+        alertConfirm(respuesta.message);
+        /*onSubmit()*/
+        return onClose();
+      } else {
+        alertError("Exisito un error revisa la consola");
+        return console.log(respuesta);
+      }
+    }
+  };
+
   return (
-    <form className="grid md:grid-cols-2 justify-center">
+    <form
+      className="grid md:grid-cols-2 justify-center"
+      onSubmit={handleSubmit}
+    >
       <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
           <label htmlFor="firstName" className="block text-sm font-medium mb-2">
@@ -10,8 +84,10 @@ const FormEmployees = ({ employee }) => {
           </label>
           <input
             type="text"
-            id="firstName"
-            defaultValue={employee ? employee.firstName : ''}
+            id="name"
+            name="name"
+            value={values.name}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -24,8 +100,10 @@ const FormEmployees = ({ employee }) => {
           </label>
           <input
             type="text"
-            id="lastName"
-            defaultValue={employee ? employee.lastName : ''}
+            id="surnames"
+            name="surnames"
+            value={values.surnames}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -33,18 +111,25 @@ const FormEmployees = ({ employee }) => {
 
       <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
-          <label htmlFor="department" className="block text-sm font-medium mb-2">
+          <label
+            htmlFor="department"
+            className="block text-sm font-medium mb-2"
+          >
             Departamento
           </label>
           <select
-            id="department"
-            defaultValue={employee ? employee.department : ''}
+            id="department_id"
+            name="department_id"
+            value={values.department_id}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           >
             <option value="">Selecciona un departamento</option>
-            <option value="HR">Recursos Humanos</option>
-            <option value="IT">Tecnología de la Información</option>
-            {/* Agrega más opciones según sea necesario */}
+            {departmentsData.map((item, index) => (
+              <option key={index} value={item._id}>
+                {item.name}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -55,27 +140,36 @@ const FormEmployees = ({ employee }) => {
             Cargo
           </label>
           <select
-            id="role"
-            defaultValue={employee ? employee.role : ''}
+            id="position_id"
+            name="position_id"
+            value={values.position_id}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           >
             <option value="">Selecciona un cargo</option>
-            <option value="manager">Gerente</option>
-            <option value="developer">Desarrollador</option>
-            {/* Agrega más opciones según sea necesario */}
+            {positionsData.map((item, index) => (
+              <option key={index} value={item._id}>
+                {item.name}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
       <div className="mb-4 xs:ml-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
-          <label htmlFor="baseSalary" className="block text-sm font-medium mb-2">
+          <label
+            htmlFor="baseSalary"
+            className="block text-sm font-medium mb-2"
+          >
             Salario Base
           </label>
           <input
             type="number"
-            id="baseSalary"
-            defaultValue={employee ? employee.baseSalary : ''}
+            id="base_salary"
+            name="base_salary"
+            value={values.base_salary}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -89,7 +183,9 @@ const FormEmployees = ({ employee }) => {
           <input
             type="text"
             id="address"
-            defaultValue={employee ? employee.address : ''}
+            name="address"
+            value={values.address}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -102,8 +198,10 @@ const FormEmployees = ({ employee }) => {
           </label>
           <input
             type="date"
-            id="startDate"
-            defaultValue={employee ? employee.startDate : ''}
+            id="hire_date"
+            name="hire_date"
+            value={values.hire_date}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -116,8 +214,10 @@ const FormEmployees = ({ employee }) => {
           </label>
           <input
             type="date"
-            id="birthDate"
-            defaultValue={employee ? employee.birthDate : ''}
+            id="birthdate"
+            name="birthdate"
+            value={values.birthdate}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -130,8 +230,10 @@ const FormEmployees = ({ employee }) => {
           </label>
           <input
             type="text"
-            id="idNumber"
-            defaultValue={employee ? employee.idNumber : ''}
+            id="ci"
+            name="ci"
+            value={values.ci}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -144,12 +246,14 @@ const FormEmployees = ({ employee }) => {
           </label>
           <select
             id="gender"
-            defaultValue={employee ? employee.gender : ''}
+            name="gender"
+            value={values.gender}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           >
             <option value="">Selecciona un género</option>
-            <option value="male">Masculino</option>
-            <option value="female">Femenino</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
             {/* Agrega más opciones según sea necesario */}
           </select>
         </div>
@@ -163,7 +267,9 @@ const FormEmployees = ({ employee }) => {
           <input
             type="email"
             id="email"
-            defaultValue={employee ? employee.email : ''}
+            name="email"
+            value={values.email}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -177,7 +283,9 @@ const FormEmployees = ({ employee }) => {
           <input
             type="text"
             id="phone"
-            defaultValue={employee ? employee.phone : ''}
+            name="phone"
+            value={values.phone}
+            onChange={handleInputChange}
             className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -188,7 +296,7 @@ const FormEmployees = ({ employee }) => {
           type="submit"
           className="leading-tight bg-principalAzulTono5 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-[9px] focus:outline-none focus:shadow-outline w-32"
         >
-          {employee ? 'Actualizar' : 'Agregar'}
+          {employee ? "Actualizar" : "Agregar"}
         </button>
       </div>
     </form>
