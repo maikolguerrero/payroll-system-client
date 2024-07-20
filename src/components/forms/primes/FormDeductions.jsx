@@ -1,30 +1,104 @@
 import { Label, TextInput } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import formValidation from "../../../validations/formValidation";
+import { alertConfirm, alertError, alertInfo } from "../../alerts/alerts";
+import { Contexto } from "../../../context/Contexto";
 
-export default function FormDeductions({ submit, current, table }) {
-  const [state, setState] = useState({});
+export default function FormDeductions({ submit, current, table, onClose }) {
+  const { peticionPost } = useContext(Contexto);
 
-  useEffect(() => {
-    if (current != null) {
-      setState(current);
+  const [values, setValues] = useState({
+    type: current ? current.type : "",
+    amount: current ? current.amount : "",
+    date: current ? current.date : "",
+    description: current ? current.description : ""
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
+  const validation = () => {
+    for (let key in values) {
+      let error = formValidation.validateText(values[key].toString());
+      if (!error) return "Completa todos los datos";
     }
-  }, []);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validate = validation();
+    if (validate) alertInfo(validate);
+
+    if (current) {
+      let respuesta = ''
+      if (table === 'Percepciones') {
+        respuesta = await peticionPost(
+          `http://localhost:3000/api/perceptions/${current._id}`,
+          "PUT",
+          values
+        );
+      } else {
+        respuesta = await peticionPost(
+          `http://localhost:3000/api/deductions/${current._id}`,
+          "PUT",
+          values
+        );
+      }
+      if (respuesta.message) {
+        alertConfirm(respuesta.message);
+        return onClose();
+      } else {
+        alert("Existio un error revisa la consola");
+        return console.log(respuesta);
+      }
+    } else {
+      let respuesta = ''
+      if (table === 'Percepciones') {
+        respuesta = await peticionPost(
+          "http://localhost:3000/api/perceptions",
+          "POST",
+          values
+        );
+      } else {
+        respuesta = await peticionPost(
+          "http://localhost:3000/api/deductions",
+          "POST",
+          values
+        );
+      }
+      if (respuesta.message) {
+        alertConfirm(respuesta.message);
+        return onClose();
+      } else {
+        alertError("Exisito un error revisa la consola");
+        return console.log(respuesta);
+      }
+    }
+  };
 
   return (
     <>
-      <form className="p-8 flex flex-col items-center">
+      <form className="p-8 flex flex-col items-center" onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-x-12 w-full">
-          {/* Campo Banco */}
+          {/* Campo Tipo */}
           <div className="mb-4">
             <label
-              htmlFor="name"
+              htmlFor="type"
               className="block text-md font-medium font-roboto-serif mb-2"
             >
-              Nombre
+              Tipo
             </label>
             <input
               type="text"
-              id="name"
+              id="type"
+              name="type"
+              value={values.type}
+              onChange={handleInputChange}
               className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
             />
           </div>
@@ -39,26 +113,15 @@ export default function FormDeductions({ submit, current, table }) {
             <input
               type="date"
               id="date"
+              name="date"
+              value={values.date}
+              onChange={handleInputChange}
               className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
             />
           </div>
-          {/* Campo Tipo */}
-          <div className="mb-4">
-            <label
-              htmlFor="type"
-              className="block text-md font-medium font-roboto-serif mb-2"
-            >
-              Tipo
-            </label>
-            <select
-              id="type"
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
-            >
-              <option value=""></option>
-            </select>
-          </div>
-          {/* Campo Monto */}
-          <div className="mb-4">
+        </div>
+        {/* Campo Monto */}
+        <div className="mb-4 w-full">
             <label
               htmlFor="amount"
               className="block text-md font-medium font-roboto-serif mb-2"
@@ -69,10 +132,12 @@ export default function FormDeductions({ submit, current, table }) {
             min={0}
               type="number"
               id="amount"
+              name="amount"
+              value={values.amount}
+              onChange={handleInputChange}
               className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
             />
           </div>
-        </div>
         {/* Campo Descripcion */}
         <div className="mb-4 w-full">
             <label
@@ -85,6 +150,9 @@ export default function FormDeductions({ submit, current, table }) {
             min={0}
               type="text"
               id="description"
+              name="description"
+              value={values.description}
+              onChange={handleInputChange}
               className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
             />
           </div>

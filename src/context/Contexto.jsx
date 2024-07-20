@@ -8,6 +8,12 @@ export function ContextoProvider(props) {
   const [user, setUser] = useState(null)
   const [users, setUsers] = useState([])
   const [departmentsData, setDepartmentsData] = useState([])
+  const [positionsData, setPositionsData] = useState([])
+  const [employeesData, setEmployeesData] = useState([])
+  const [perceptionsData, setPerceptionsData] = useState([])
+  const [deductionsData, setDeductionsData] = useState([])
+  const [banksData, setBanksData] = useState([])
+  const [banksAcountsData, setBanksAcountsData] = useState([])
   
   const peticionPost = async (url, metodo, contenido) => {
     try {
@@ -85,7 +91,19 @@ export function ContextoProvider(props) {
       users,
       peticionDelete,
       departmentsData,
-      setDepartmentsData
+      setDepartmentsData,
+      positionsData,
+      setPositionsData,
+      employeesData,
+      setEmployeesData,
+      perceptionsData,
+      setPerceptionsData,
+      deductionsData,
+      setDeductionsData,
+      banksData,
+      setBanksData,
+      banksAcountsData,
+      setBanksAcountsData
     }}>
       {props.children}
     </Contexto.Provider>
