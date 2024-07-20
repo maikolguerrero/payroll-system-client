@@ -10,6 +10,7 @@ import Reports from './views/Reports';
 import PerceptionsDeductions from './views/PerceptionsDeductions';
 import Attendances from './views/Attendances';
 import Banks from './views/Banks';
+import BanksSystem from './views/admin/BanksSystem';
 import Settings from './views/Settings';
 import CompanySettings from './views/CompanySettings';
 import UserProfile from './views/UserProfile';
@@ -87,6 +88,7 @@ export default function App() {
             <Route path={paths.COMPANY_SETTINGS_PATH} element={<ProtectedRoute adminComponent={CompanySettings} />} />
             <Route path={paths.USER_PROFILE_PATH} element={<ProtectedRoute adminComponent={UserProfile} />} />
             <Route path={paths.USERS_PATH} element={<ProtectedRoute adminComponent={Users} />} />
+            <Route path={paths.BANKS_SYSTEM_PATH} element={<ProtectedRoute adminComponent={BanksSystem} />} />
 
             <Route path={paths.COMPANY_REGISTER_PATH} element={<CompanyRegister />} />
             <Route path={paths.LOGIN_PATH} element={<Login />} />

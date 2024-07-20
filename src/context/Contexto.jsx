@@ -12,6 +12,8 @@ export function ContextoProvider(props) {
   const [employeesData, setEmployeesData] = useState([])
   const [perceptionsData, setPerceptionsData] = useState([])
   const [deductionsData, setDeductionsData] = useState([])
+  const [banksData, setBanksData] = useState([])
+  const [banksAcountsData, setBanksAcountsData] = useState([])
   
   const peticionPost = async (url, metodo, contenido) => {
     try {
@@ -97,7 +99,11 @@ export function ContextoProvider(props) {
       perceptionsData,
       setPerceptionsData,
       deductionsData,
-      setDeductionsData
+      setDeductionsData,
+      banksData,
+      setBanksData,
+      banksAcountsData,
+      setBanksAcountsData
     }}>
       {props.children}
     </Contexto.Provider>
