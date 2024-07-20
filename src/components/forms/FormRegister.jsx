@@ -55,8 +55,8 @@ export default function FormRegister() {
   };
 
   return (
-    <div className="flex items-center justify-center flex-grow w-full max-w-md relative mt-24 sm:mt-32 md:mt-24">
-      <div className="bg-white p-8 rounded-[10px] drop-shadow-[25px_40px_rgba(0,66,111,0.25)] w-full max-w-lg">
+    <div className="flex items-center justify-center flex-grow w-full relative">
+      <div className="bg-white p-6 sm:p-4 rounded-[10px] drop-shadow-[25px_40px_rgba(0,66,111,0.25)] w-full max-w-md mt-8 2xl:max-w-lg sm:max-w-sm xs:mx-6">
         <h2 className="text-2xl font-semibold font-nunito mb-6 text-left">
           Registro
         </h2>
@@ -136,8 +136,5 @@ export default function FormRegister() {
         </form>
       </div>
     </div>
-  )
+  );
 }
-
-
-

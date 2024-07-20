@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
-import Modal from '../components/Modal';
-import AddButton from '../components/AddButton';
-import SearchBar from '../components/SearchBar';
-import Pagination from '../components/Pagination';
-import Table from '../components/Table';
-import FormPositions from '../components/forms/FormPositions';
+import React, { useState } from "react";
+import Modal from "../components/Modal";
+import AddButton from "../components/AddButton";
+import SearchBar from "../components/SearchBar";
+import Pagination from "../components/Pagination";
+import Table from "../components/Table";
+import FormPositions from "../components/forms/FormPositions";
 
 const positionsData = [
-  { id: 1, nombre: "Desarrollador", descripcion: "Desarrollador de software", salarioBase: 50000, horasDiarias: 8, periodo: "Mensual", diasTrabajo: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] },
-  { id: 2, nombre: "Gerente", descripcion: "Gerente de proyectos", salarioBase: 70000, horasDiarias: 8, periodo: "Mensual", diasTrabajo: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] },
+  {
+    id: 1,
+    nombre: "Desarrollador",
+    descripcion: "Desarrollador de software",
+    salarioBase: 50000,
+    horasDiarias: 8,
+    periodo: "Mensual",
+    diasTrabajo: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"],
+  },
+  {
+    id: 2,
+    nombre: "Gerente",
+    descripcion: "Gerente de proyectos",
+    salarioBase: 70000,
+    horasDiarias: 8,
+    periodo: "Mensual",
+    diasTrabajo: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"],
+  },
 ];
 
 const columns = [
@@ -21,6 +37,19 @@ const columns = [
 ];
 
 const ITEMS_PER_PAGE = 10;
+
+const abreviarDias = (dias) => {
+  const mapaDias = {
+    Lunes: "Lun",
+    Martes: "Mar",
+    Miércoles: "Mié",
+    Jueves: "Jue",
+    Viernes: "Vie",
+    Sábado: "Sáb",
+    Domingo: "Dom",
+  };
+  return dias.map((dia) => mapaDias[dia] || dia).join(", ");
+};
 
 const Positions = () => {
   const [positions, setPositions] = useState(positionsData);
@@ -44,13 +73,16 @@ const Positions = () => {
   };
 
   const handleSearch = (query) => {
-    const filtered = positions.filter(position =>
-      position.nombre.toLowerCase().includes(query.toLowerCase()) ||
-      position.descripcion.toLowerCase().includes(query.toLowerCase()) ||
-      position.salarioBase.toString().includes(query.toLowerCase()) ||
-      position.horasDiarias.toString().includes(query.toLowerCase()) ||
-      position.periodo.toLowerCase().includes(query.toLowerCase()) ||
-      position.diasTrabajo.some(dia => dia.toLowerCase().includes(query.toLowerCase()))
+    const filtered = positions.filter(
+      (position) =>
+        position.nombre.toLowerCase().includes(query.toLowerCase()) ||
+        position.descripcion.toLowerCase().includes(query.toLowerCase()) ||
+        position.salarioBase.toString().includes(query.toLowerCase()) ||
+        position.horasDiarias.toString().includes(query.toLowerCase()) ||
+        position.periodo.toLowerCase().includes(query.toLowerCase()) ||
+        position.diasTrabajo.some((dia) =>
+          dia.toLowerCase().includes(query.toLowerCase())
+        )
     );
     setFilteredPositions(filtered);
     setCurrentPage(1);
@@ -58,7 +90,12 @@ const Positions = () => {
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = filteredPositions.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredPositions
+    .slice(indexOfFirstItem, indexOfLastItem)
+    .map((position) => ({
+      ...position,
+      diasTrabajo: abreviarDias(position.diasTrabajo),
+    }));
   const totalPages = Math.ceil(filteredPositions.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (pageNumber) => {
@@ -66,11 +103,26 @@ const Positions = () => {
   };
 
   const handleAddEditPosition = (positionData) => {
+    const formattedPositionData = {
+      ...positionData,
+      diasTrabajo: Array.isArray(positionData.diasTrabajo)
+        ? positionData.diasTrabajo
+        : [],
+    };
+
     if (currentPosition) {
-      setPositions(positions.map(pos => pos.id === currentPosition.id ? positionData : pos));
-      setFilteredPositions(filteredPositions.map(pos => pos.id === currentPosition.id ? positionData : pos));
+      setPositions(
+        positions.map((pos) =>
+          pos.id === currentPosition.id ? { ...formattedPositionData, id: currentPosition.id } : pos
+        )
+      );
+      setFilteredPositions(
+        filteredPositions.map((pos) =>
+          pos.id === currentPosition.id ? { ...formattedPositionData, id: currentPosition.id } : pos
+        )
+      );
     } else {
-      const newPosition = { ...positionData, id: positions.length + 1 };
+      const newPosition = { ...formattedPositionData, id: positions.length + 1 };
       setPositions([...positions, newPosition]);
       setFilteredPositions([...filteredPositions, newPosition]);
     }
@@ -81,7 +133,7 @@ const Positions = () => {
     <div className="p-4">
       <h1 className="text-2xl text-white font-bold mb-4 text-left">Cargos</h1>
       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2 sm:gap-0">
-      <SearchBar placeholder="Buscar cargos..." onSearch={handleSearch} />
+        <SearchBar placeholder="Buscar cargos..." onSearch={handleSearch} />
       </div>
       <Table columns={columns} data={currentItems} onEdit={openEditModal} />
       <Pagination
@@ -95,7 +147,10 @@ const Positions = () => {
         onClose={closeModal}
         title={currentPosition ? "Editar cargo" : "Agregar cargo"}
       >
-        <FormPositions position={currentPosition} onSubmit={handleAddEditPosition} />
+        <FormPositions
+          position={currentPosition}
+          onSubmit={handleAddEditPosition}
+        />
       </Modal>
     </div>
   );
