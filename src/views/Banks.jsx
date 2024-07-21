@@ -103,7 +103,7 @@ export default function Banks() {
 
   const handleDelete = async () => {
     setFilteredBanks(filteredBanks.filter((item) => item._id !== currentBank._id));
-        // Lógica de eliminación
+    // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/banks_accounts/${currentBank._id}`,
       "DELETE"

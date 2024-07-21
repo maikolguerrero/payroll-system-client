@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Table from '../components/Table';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
@@ -9,24 +9,11 @@ import FormAttendance from '../components/forms/FormAttendance'; // Actualizado
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useNavigate, useLocation } from 'react-router-dom'; // Importa useNavigate y useLocation
-
-// Datos de ejemplo de empleados
-const employees = [
-  { id: 1, ci: "1234567890", name: "John Doe" },
-  { id: 2, ci: "0987654321", name: "Jane Smith" },
-  { id: 3, ci: "1122334455", name: "Sam Johnson" },
-];
-
-const attendances = [
-  { id: 1, ci: "1234567890", name: "John Doe", department: "IT", position: "Developer", date: "2023-07-01", entry_time: "08:00", exit_time: "16:00", hours_worked: 8 },
-  { id: 2, ci: "0987654321", name: "Jane Smith", department: "HR", position: "Manager", date: "2023-07-01", entry_time: "09:00", exit_time: "16:00", hours_worked: 7 },
-];
+import { Contexto } from '../context/Contexto';
+import { alertConfirm, alertError } from '../components/alerts/alerts';
 
 const columns = [
-  { label: "CI", accessor: "ci" },
-  { label: "Nombre", accessor: "name" },
-  { label: "Departamento", accessor: "department" },
-  { label: "Cargo", accessor: "position" },
+  { label: "Nombre", accessor: "employee_id" },
   { label: "Fecha", accessor: "date" },
   { label: "Hora Ingreso", accessor: "entry_time" },
   { label: "Hora Salida", accessor: "exit_time" },
@@ -36,6 +23,8 @@ const columns = [
 const ITEMS_PER_PAGE = 10; // Número de elementos por página
 
 export default function Attendances() {
+  const {attendances, setAttendances, peticionGet, employeesData, setEmployeesData, peticionDelete} = useContext(Contexto);
+
   const [filteredAttendances, setFilteredAttendances] = useState(attendances);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,6 +40,22 @@ export default function Attendances() {
     const formattedDate = format(today, 'yyyy-MM-dd');
     setCurrentDate(formattedDate);
     setDate(formattedDate);
+
+    const realizarPeticion = async () => {
+      const respuesta = await peticionGet(
+        "http://localhost:3000/api/attendances/all",
+        "GET"
+      );
+      const respuesta2 = await peticionGet(
+        "http://localhost:3000/api/employees/all",
+        "GET"
+      );
+      setEmployeesData(respuesta2)
+      setAttendances(respuesta);
+      setFilteredAttendances(respuesta);
+    };
+
+    realizarPeticion();
   }, []);
 
   useEffect(() => {
@@ -106,8 +111,19 @@ export default function Attendances() {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    setFilteredAttendances(filteredAttendances.filter((item) => item._id !== currentAttendance._id));
     // Lógica de eliminación
+    const respuesta = await peticionDelete(
+      `http://localhost:3000/api/attendances/${currentAttendance._id}`,
+      "DELETE"
+    );
+    console.log(respuesta);
+    if (respuesta.message) {
+      alertConfirm(respuesta.message);
+    } else {
+      alertError("Ocurrio un Error Revisa la Consola");
+    }
     closeModals();
   };
 
@@ -150,7 +166,7 @@ export default function Attendances() {
       />
       <AddButton openModal={openAddModal} />
       <Modal isOpen={isModalOpen} onClose={closeModals} title={currentAttendance ? "Editar asistencia" : "Registrar nueva asistencia"}>
-        <FormAttendance employees={employees} onSubmit={handleAddAttendance} />
+        <FormAttendance employees={employeesData} onSubmit={handleAddAttendance} current={currentAttendance} />
       </Modal>
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
