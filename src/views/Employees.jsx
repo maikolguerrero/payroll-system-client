@@ -155,12 +155,12 @@ const Employees = () => {
   };
 
   return (
-    <div className="p-4 dark:bg-gray-900">
+    <div className="p-4">
       <h1 className="text-2xl text-white dark:text-gray-100 font-bold mb-4 text-left"">
         Empleados
       </h1>
       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2 sm:gap-0">
-        <SearchBar placeholder="Buscar empleados..." onSearch={handleSearch} />
+      <SearchBar placeholder="Buscar empleados..." onSearch={handleSearch} />
       </div>
       {employees.length === 0 ? (
         <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
