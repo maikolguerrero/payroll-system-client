@@ -5,58 +5,71 @@ import Pagination from '../components/Pagination';
 import AddButton from '../components/AddButton';
 import Modal from '../components/Modal';
 import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
-import FormAttendance from '../components/forms/FormAttendance'; // Actualizado
+import FormAttendance from '../components/forms/FormAttendance';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { useNavigate, useLocation } from 'react-router-dom'; // Importa useNavigate y useLocation
+import { useNavigate } from 'react-router-dom';
 import { Contexto } from '../context/Contexto';
 import { alertConfirm, alertError } from '../components/alerts/alerts';
 
 const columns = [
-  { label: "Nombre", accessor: "employee_id" },
+  { label: "Cédula", accessor: "ci" },
+  { label: "Nombre", accessor: "employee_name" },
+  { label: "Departamento", accessor: "department" },
+  { label: "Cargo", accessor: "position" },
   { label: "Fecha", accessor: "date" },
   { label: "Hora Ingreso", accessor: "entry_time" },
   { label: "Hora Salida", accessor: "exit_time" },
   { label: "Horas Trabajadas", accessor: "hours_worked" },
 ];
 
-const ITEMS_PER_PAGE = 10; // Número de elementos por página
+const ITEMS_PER_PAGE = 10;
 
 export default function Attendances() {
-  const {attendances, setAttendances, peticionGet, employeesData, setEmployeesData, peticionDelete} = useContext(Contexto);
+  const { peticionGet, employeesData, setEmployeesData, peticionDelete } = useContext(Contexto);
 
-  const [filteredAttendances, setFilteredAttendances] = useState(attendances);
+  const [filteredAttendances, setFilteredAttendances] = useState([]);
+  const [originalAttendances, setOriginalAttendances] = useState([]); // Datos originales
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentAttendance, setCurrentAttendance] = useState(null);
   const [currentDate, setCurrentDate] = useState('');
   const [date, setDate] = useState('');
-  const navigate = useNavigate(); // Usar useNavigate para la navegación
-  const location = useLocation(); // Usar useLocation para acceder a la ubicación actual
+  const navigate = useNavigate();
 
   useEffect(() => {
     const today = new Date();
     const formattedDate = format(today, 'yyyy-MM-dd');
     setCurrentDate(formattedDate);
     setDate(formattedDate);
+  }, []);
 
-    const realizarPeticion = async () => {
-      const respuesta = await peticionGet(
-        "http://localhost:3000/api/attendances/all",
-        "GET"
-      );
-      const respuesta2 = await peticionGet(
-        "http://localhost:3000/api/employees/all",
-        "GET"
-      );
-      setEmployeesData(respuesta2)
-      setAttendances(respuesta);
-      setFilteredAttendances(respuesta);
+  useEffect(() => {
+    const fetchAttendancesForDate = async () => {
+      if (date) {
+        const attendancesResponse = await peticionGet(`http://localhost:3000/api/attendances/date/${date}`, "GET");
+        const employeesResponse = await peticionGet("http://localhost:3000/api/employees/all", "GET");
+        setEmployeesData(employeesResponse);
+
+        const attendancesWithDetails = attendancesResponse.map(attendance => {
+          const employee = employeesResponse.find(emp => emp._id === attendance.employee_id);
+          return {
+            ...attendance,
+            ci: employee?.ci || 'Desconocido',
+            employee_name: employee ? `${employee.name} ${employee.surnames}` : 'Desconocido',
+            department: employee?.department || 'Desconocido',
+            position: employee?.position || 'Desconocido',
+          };
+        });
+
+        setOriginalAttendances(attendancesWithDetails); // Guardar los datos originales
+        setFilteredAttendances(attendancesWithDetails); // Inicializar la lista filtrada
+      }
     };
 
-    realizarPeticion();
-  }, []);
+    fetchAttendancesForDate();
+  }, [date, setEmployeesData]);
 
   useEffect(() => {
     if (date) {
@@ -71,15 +84,23 @@ export default function Attendances() {
   };
 
   const handleSearch = (query) => {
-    const filtered = attendances.filter(attendance =>
-      attendance.ci.toLowerCase().includes(query.toLowerCase()) ||
-      attendance.name.toLowerCase().includes(query.toLowerCase()) ||
-      attendance.department.toLowerCase().includes(query.toLowerCase()) ||
-      attendance.position.toLowerCase().includes(query.toLowerCase()) ||
-      attendance.date.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredAttendances(filtered);
+    if (query === null || query.trim() === '') {
+      setFilteredAttendances(originalAttendances); // Restaurar los datos originales si la consulta está vacía
+    } else {
+      const filtered = originalAttendances.filter(attendance =>
+        attendance.ci.toLowerCase().includes(query.toLowerCase()) ||
+        attendance.employee_name.toLowerCase().includes(query.toLowerCase()) ||
+        attendance.department.toLowerCase().includes(query.toLowerCase()) ||
+        attendance.position.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredAttendances(filtered);
+    }
     setCurrentPage(1); // Resetea la página actual al buscar
+  };
+
+  const handleReset = () => {
+    setFilteredAttendances(originalAttendances); // Restaurar los datos originales
+    setCurrentPage(1); // Resetea la página actual
   };
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
@@ -113,12 +134,10 @@ export default function Attendances() {
 
   const handleDelete = async () => {
     setFilteredAttendances(filteredAttendances.filter((item) => item._id !== currentAttendance._id));
-    // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/attendances/${currentAttendance._id}`,
       "DELETE"
     );
-    console.log(respuesta);
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
@@ -133,7 +152,6 @@ export default function Attendances() {
   };
 
   const handleAddAttendance = (attendanceData) => {
-    // Lógica para agregar la asistencia
     console.log(attendanceData);
     closeModals();
   };
@@ -145,9 +163,9 @@ export default function Attendances() {
       </h1>
       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2 sm:gap-0">
         <div className="w-full sm:w-auto">
-          <SearchBar placeholder="Buscar asistencias..." onSearch={handleSearch} />
+          <SearchBar placeholder="Buscar asistencias..." onSearch={handleSearch} onReset={handleReset} />
         </div>
-        <div className="sm:w-auto">
+        <div className="sm:w-auto flex items-center gap-2">
           <input
             type="date"
             id="attendacancesDate"
@@ -158,12 +176,20 @@ export default function Attendances() {
           />
         </div>
       </div>
-      <Table columns={columns} data={currentItems} onEdit={openEditModal} onDelete={openDeleteModal} />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {filteredAttendances.length === 0 ? (
+        <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
+          No hay asistencias registradas...
+        </h3>
+      ) : (
+        <>
+          <Table columns={columns} data={currentItems} onEdit={openEditModal} onDelete={openDeleteModal} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
+      )}
       <AddButton openModal={openAddModal} />
       <Modal isOpen={isModalOpen} onClose={closeModals} title={currentAttendance ? "Editar asistencia" : "Registrar nueva asistencia"}>
         <FormAttendance employees={employeesData} onSubmit={handleAddAttendance} current={currentAttendance} />

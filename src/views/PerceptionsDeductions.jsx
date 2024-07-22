@@ -28,7 +28,8 @@ export default function PerceptionsDeductions() {
     peticionDelete,
   } = useContext(Contexto);
 
-  const [filtered, setFiltered] = useState(perceptionsData);
+  const [filtered, setFiltered] = useState([]);
+  const [originalData, setOriginalData] = useState({ perceptions: [], deductions: [] });
   const [title, setTitle] = useState("Percepciones");
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,6 +48,7 @@ export default function PerceptionsDeductions() {
       );
       setPerceptionsData(respuesta);
       setDeductionsData(respuesta2);
+      setOriginalData({ perceptions: respuesta, deductions: respuesta2 });
       setFiltered(respuesta);
     };
 
@@ -54,27 +56,36 @@ export default function PerceptionsDeductions() {
   }, []);
 
   useEffect(() => {
-    setFiltered(perceptionsData);
-  }, [perceptionsData]);
-
-  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+    if (title === "Percepciones") {
+      setFiltered(perceptionsData);
+    } else {
+      setFiltered(deductionsData);
+    }
+  }, [perceptionsData, deductionsData, title]);
 
   const handleSearch = (query) => {
     let filtered = [];
     if (title === "Percepciones") {
-      filtered = perceptionsData.filter((item) =>
-        item.name.toLowerCase().includes(query.toLowerCase())
+      filtered = originalData.perceptions.filter((item) =>
+        item.description.toLowerCase().includes(query.toLowerCase())
       );
     } else {
-      filtered = deductionsData.filter((item) =>
-        item.name.toLowerCase().includes(query.toLowerCase())
+      filtered = originalData.deductions.filter((item) =>
+        item.description.toLowerCase().includes(query.toLowerCase())
       );
     }
     setFiltered(filtered);
     setCurrentPage(1); // Resetea la página actual al buscar
+  };
+
+  const handleReset = () => {
+    // Restaurar los datos originales y resetear la búsqueda
+    if (title === "Percepciones") {
+      setFiltered(originalData.perceptions);
+    } else {
+      setFiltered(originalData.deductions);
+    }
+    setCurrentPage(1); // Resetea la página actual al reiniciar
   };
 
   const handleChangeType = (value) => {
@@ -124,15 +135,20 @@ export default function PerceptionsDeductions() {
     closeModals();
   };
 
-  const openDeleteModal = (user) => {
-    setCurrent(user);
+  const openDeleteModal = (item) => {
+    setCurrent(item);
     setIsDeleteModalOpen(true);
   };
 
-  const openEditModal = (user) => {
-    setCurrent(user);
+  const openEditModal = (item) => {
+    setCurrent(item);
     setIsModalOpen(true);
   };
+
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
 
   return (
     <>
@@ -141,7 +157,7 @@ export default function PerceptionsDeductions() {
           {title}
         </h1>
         <div className="flex gap-8 mb-8">
-          <SearchBar placeholder="Buscar bancos..." onSearch={handleSearch} />
+          <SearchBar placeholder={`Buscar ${title.toLowerCase()}...`} onSearch={handleSearch} onReset={handleReset} />
           <select
             name="type-cost"
             id="type-cost"
@@ -154,7 +170,7 @@ export default function PerceptionsDeductions() {
         </div>
         {filtered.length === 0 ? (
           <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
-            No hay {title} registrados...
+            No hay {title.toLowerCase()} registrados...
           </h3>
         ) : (
           <>
@@ -176,7 +192,7 @@ export default function PerceptionsDeductions() {
         <Modal
           isOpen={isModalOpen}
           onClose={closeModals}
-          title={current ? "Editar " + title : "Registrar nuevas " + title}
+          title={current ? `Editar ${title}` : `Registrar nuevas ${title}`}
         >
           <FormDeductions
             submit={current ? "Editar" : "Agregar "}
