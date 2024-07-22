@@ -1,3 +1,4 @@
+import React from 'react';
 import CardRute from "../components/CardRute";
 import {
   FiUsers,
@@ -45,9 +46,9 @@ export default function Dashboard() {
   const [banksAccounts, setBanksAccounts] = useState([]);
   const [perceptions, setPerceptions] = useState({});
   const [deductions, setDeductions] = useState({});
-  const [departmentsArray, setDepartmentsArray] = useState([])
-  const [positionsArray, setPositionsArray] = useState([])
-  const [departmentCounte, setDepartmentCounte] = useState([])
+  const [departmentsArray, setDepartmentsArray] = useState([]);
+  const [positionsArray, setPositionsArray] = useState([]);
+  const [departmentCounte, setDepartmentCounte] = useState([]);
 
   useEffect(() => {
     realizarPeticion();
@@ -58,22 +59,22 @@ export default function Dashboard() {
       base_salary: [],
       name: [],
     };
-    let names = []
+    let names = [];
     positionsData.forEach((item) => {
       position.base_salary.push(item.base_salary);
       position.name.push(item.name);
       names.push(item.name);
     });
-    setPositionsArray(names)
+    setPositionsArray(names);
     setPositions(position);
   }, [positionsData]);
 
   useEffect(() => {
-    let names = []
+    let names = [];
     departmentsData.forEach((item) => {
       names.push(item.name);
     });
-    setDepartmentsArray(names)
+    setDepartmentsArray(names);
   }, [departmentsData]);
 
   useEffect(() => {
@@ -173,8 +174,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="p-8">
-        <h1 className="text-2xl text-white font-bold mb-4 text-left">
+      <div className="p-8 bg-white dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen">
+        <h1 className="text-2xl font-bold mb-4 text-left">
           Dashboard
         </h1>
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-12">
@@ -185,8 +186,8 @@ export default function Dashboard() {
       </div>
 
       <section className="grid grid-cols-1 p-12">
-        <div className="bg-white p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
-          <h3 className="text-xl text-black font-bold mb-4 text-center">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
+          <h3 className="text-xl text-black dark:text-white font-bold mb-4 text-center">
             Tabla de Salario por Cargos
           </h3>
           <div className="px-12 pb-6">
@@ -198,13 +199,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
-          <h3 className="text-xl text-black font-bold mb-4 text-center">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
+          <h3 className="text-xl text-black dark:text-white font-bold mb-4 text-center">
             Relación de Empleados de la Empresa
           </h3>
           <div className="grid lg:grid-cols-2">
             <span>
-              <h4 className="text-lg text-black font-bold mb-4 text-center">
+              <h4 className="text-lg text-black dark:text-white font-bold mb-4 text-center">
                 Generos de Empleados
               </h4>
               <div className="px-12 pb-6 lg:min-h-[350px]">
@@ -215,7 +216,7 @@ export default function Dashboard() {
               </div>
             </span>
             <span>
-              <h4 className="text-lg text-black font-bold mb-4 text-center">
+              <h4 className="text-lg text-black dark:text-white font-bold mb-4 text-center">
                 Bancos de Empleados
               </h4>
               <div className="px-12 pb-6 lg:min-h-[350px]">
@@ -223,7 +224,7 @@ export default function Dashboard() {
               </div>
             </span>
             <span>
-              <h4 className="text-lg text-black font-bold mb-4 text-center">
+              <h4 className="text-lg text-black dark:text-white font-bold mb-4 text-center">
                 Empleados por Cargo
               </h4>
               <div className="px-12 pb-6 lg:min-h-[350px]">
@@ -234,7 +235,7 @@ export default function Dashboard() {
               </div>
             </span>
             <span>
-              <h4 className="text-lg text-black font-bold mb-4 text-center">
+              <h4 className="text-lg text-black dark:text-white font-bold mb-4 text-center">
                 Empleados por Departamento
               </h4>
               <div className="px-12 pb-6 lg:min-h-[350px]">
@@ -244,8 +245,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
-          <h3 className="text-xl text-black font-bold mb-4 text-center">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
+          <h3 className="text-xl text-black dark:text-white font-bold mb-4 text-center">
             Relación de Percepciones
           </h3>
           <div className="px-12 pb-6">
@@ -253,8 +254,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
-          <h3 className="text-xl text-black font-bold mb-4 text-center">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
+          <h3 className="text-xl text-black dark:text-white font-bold mb-4 text-center">
             Relación de Deducciones
           </h3>
           <div className="px-12 pb-6">

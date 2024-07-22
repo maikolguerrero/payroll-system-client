@@ -71,7 +71,7 @@ export default function FormBank({ submit, bank, onClose }) {
           <div className="mb-4">
             <label
               htmlFor="bank_id"
-              className="block text-md font-medium font-roboto-serif mb-2"
+              className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
               Banco
             </label>
@@ -80,7 +80,7 @@ export default function FormBank({ submit, bank, onClose }) {
               name="bank_id"
               value={values.bank_id}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
+               className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             >
               <option value="">Selecciona un empleado</option>
               {banksData.map((item, index) => (
@@ -94,24 +94,26 @@ export default function FormBank({ submit, bank, onClose }) {
           <div className="mb-4">
             <label
               htmlFor="account_number"
-              className="block text-md font-medium font-roboto-serif mb-2"
+              className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
-              Numero de Cuenta
+              Número de Cuenta
             </label>
             <input
               type="text"
+              id="number_account"
+              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
               id="account_number"
               name="account_number"
               value={values.account_number}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
+              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             />
           </div>
           {/* Campo Titular */}
           <div className="mb-4">
             <label
               htmlFor="employee_id"
-              className="block text-md font-medium font-roboto-serif mb-2"
+              className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
               Empleado
             </label>
@@ -120,7 +122,7 @@ export default function FormBank({ submit, bank, onClose }) {
               name="employee_id"
               value={values.employee_id}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             >
               <option value="">Selecciona un empleado</option>
               {employeesData.map((item, index) => (
@@ -135,7 +137,7 @@ export default function FormBank({ submit, bank, onClose }) {
           <div className="mb-4">
             <label
               htmlFor="account_type"
-              className="block text-md font-medium font-roboto-serif mb-2"
+                 className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
               Tipo de Cuenta
             </label>
@@ -145,7 +147,7 @@ export default function FormBank({ submit, bank, onClose }) {
               name="account_type"
               value={values.account_type}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
+               className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             >
               <option value="">Seleccione un tipo</option>
               <option value="Ahorro">Ahorro</option>
@@ -153,7 +155,7 @@ export default function FormBank({ submit, bank, onClose }) {
             </select>
           </div>
         </div>
-        <button className="rounded-xl bg-principalAzulTono5 px-12 py-2 mt-12 text-white text-xl">
+        <button className="rounded-xl bg-principalAzulTono5 px-12 py-2 mt-12 text-white text-xl hover:bg-principalAzulTono4">
           {submit}
         </button>
       </form>

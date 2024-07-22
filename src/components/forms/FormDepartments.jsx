@@ -4,7 +4,7 @@ import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 import { Contexto } from "../../context/Contexto";
 
 const FormDepartments = ({ department, onClose, onSubmit }) => {
-  const { peticionPost } = useContext(Contexto)
+  const { peticionPost } = useContext(Contexto);
 
   const [values, setValues] = useState({
     name: department ? department.name : "",
@@ -42,16 +42,13 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
       );
       if (respuesta.message === "Departamento actualizado exitosamente") {
         alertConfirm(respuesta.message);
-        /*onSubmit()*/
         return onClose();
       } else {
-        alert("Existio un error revisa la consola");
+        alert("Existió un error, revisa la consola");
         return setValues({
           name: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-          role: "admin_nomina",
+          description: "",
+          location: "",
         });
       }
     } else {
@@ -62,17 +59,14 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
       );
       if (respuesta.message === "Departamento creado exitosamente") {
         alertConfirm(respuesta.message);
-        /*onSubmit()*/
         return onClose();
       } else {
-        alertError("Exisito un error revisa la consola");
+        alertError("Existe un error, revisa la consola");
         console.log(respuesta);
         return setValues({
           name: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-          role: "admin_nomina",
+          description: "",
+          location: "",
         });
       }
     }
@@ -80,13 +74,13 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
 
   return (
     <form
-      className="grid grid-cols-1 md:grid-cols-2 gap-6"
+      className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-white dark:bg-gray-800"
       onSubmit={handleSubmit}
     >
       {/* Campo Nombre */}
       <div className="mb-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
-          <label htmlFor="name" className="block text-sm font-medium mb-2">
+          <label htmlFor="name" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-200">
             Nombre
           </label>
           <input
@@ -95,7 +89,7 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
             name="name"
             value={values.name}
             onChange={handleInputChange}
-            className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-transparent rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-200 w-full leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline"
           />
         </div>
       </div>
@@ -103,7 +97,7 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
       {/* Campo Ubicación */}
       <div className="mb-4 flex justify-center">
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
-          <label htmlFor="location" className="block text-sm font-medium mb-2">
+          <label htmlFor="location" className="block text-sm font-medium mb-2 text-gray-900 w-full dark:text-gray-200">
             Ubicación
           </label>
           <input
@@ -112,7 +106,7 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
             name="location"
             value={values.location}
             onChange={handleInputChange}
-            className="leading-tight shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
+            className="leading-tight shadow appearance-none border border-transparent rounded-[9px] py-2 px-4 text-gray-800 w-full dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline"
           />
         </div>
       </div>
@@ -122,7 +116,7 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
         <div className="w-full md:w-5/6 md:ml-auto mr-8">
           <label
             htmlFor="description"
-            className="block text-sm font-medium mb-2"
+            className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-200"
           >
             Descripción
           </label>
@@ -132,7 +126,7 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
             name="description"
             value={values.description}
             onChange={handleInputChange}
-            className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-transparent rounded-[9px] py-2 px-4 w-full text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline"
           />
         </div>
       </div>

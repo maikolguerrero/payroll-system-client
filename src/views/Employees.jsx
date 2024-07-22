@@ -25,42 +25,38 @@ const columns = [
 const ITEMS_PER_PAGE = 10;
 
 const Employees = () => {
-  const { employeesData, setEmployeesData, setDepartmentsData, setPositionsData, peticionGet, peticionDelete } =
-    useContext(Contexto);
+  const { employeesData, setEmployeesData, setDepartmentsData, setPositionsData, peticionGet, peticionDelete } = useContext(Contexto);
 
-  const [employees, setEmployees] = useState(employeesData);
-  const [filteredEmployees, setFilteredEmployees] = useState(employeesData);
+  const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState(null);
 
   useEffect(() => {
-    const realizarPeticion = async () => {
-      const respuesta = await peticionGet(
-        "http://localhost:3000/api/employees/all",
-        "GET"
-      );
-      setEmployeesData(respuesta);
-      setEmployees(respuesta);
-      const respusta2 = await peticionGet(
-        "http://localhost:3000/api/departments/all",
-        "GET"
-      );
-      setDepartmentsData(respusta2);
-      const respusta3 = await peticionGet(
-        "http://localhost:3000/api/positions/all",
-        "GET"
-      );
-      setPositionsData(respusta3);
+    const fetchData = async () => {
+      try {
+        const [employeesResponse, departmentsResponse, positionsResponse] = await Promise.all([
+          peticionGet("http://localhost:3000/api/employees/all", "GET"),
+          peticionGet("http://localhost:3000/api/departments/all", "GET"),
+          peticionGet("http://localhost:3000/api/positions/all", "GET")
+        ]);
+        setEmployeesData(employeesResponse);
+        setEmployees(employeesResponse);
+        setDepartmentsData(departmentsResponse);
+        setPositionsData(positionsResponse);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
     };
 
-    realizarPeticion();
-  }, []);
+    fetchData();
+  }, [peticionGet, setEmployeesData, setDepartmentsData, setPositionsData]);
 
   useEffect(() => {
-    setFilteredEmployees(employeesData);
-  }, [employeesData]);
+    setFilteredEmployees(employees);
+  }, [employees]);
 
   const openAddModal = () => {
     setCurrentEmployee(null);
@@ -86,37 +82,32 @@ const Employees = () => {
   };
 
   const handleDelete = async () => {
-    setEmployees(employees.filter((emp) => emp._id !== currentEmployee._id));
-    setFilteredEmployees(
-      filteredEmployees.filter((emp) => emp._id !== currentEmployee._id)
-    );
-    // Lógica de eliminación
-    const respuesta = await peticionDelete(
-      `http://localhost:3000/api/employees/${currentEmployee._id}`,
-      "DELETE"
-    );
-    console.log(respuesta);
-    if (respuesta.message) {
-      alertConfirm(respuesta.message);
-    } else {
+    try {
+      await peticionDelete(`http://localhost:3000/api/employees/${currentEmployee._id}`, "DELETE");
+      const updatedEmployees = employees.filter((emp) => emp._id !== currentEmployee._id);
+      setEmployees(updatedEmployees);
+      setFilteredEmployees(updatedEmployees);
+      alertConfirm("Empleado eliminado exitosamente");
+    } catch (error) {
       alertError("Ocurrio un Error Revisa la Consola");
     }
     closeDeleteModal();
   };
 
   const handleSearch = (query) => {
+    const lowercasedQuery = query.toLowerCase();
     const filtered = employees.filter(
       (employee) =>
-        employee.ci.toLowerCase().includes(query.toLowerCase()) ||
-        employee.name.toLowerCase().includes(query.toLowerCase()) ||
-        employee.department.toLowerCase().includes(query.toLowerCase()) ||
-        employee.position.toLowerCase().includes(query.toLowerCase()) ||
-        employee.salary.toLowerCase().includes(query.toLowerCase()) ||
-        employee.startDate.toLowerCase().includes(query.toLowerCase()) ||
-        employee.phone.toLowerCase().includes(query.toLowerCase()) ||
-        employee.email.toLowerCase().includes(query.toLowerCase()) ||
-        employee.address.toLowerCase().includes(query.toLowerCase()) ||
-        employee.birthDate.toLowerCase().includes(query.toLowerCase())
+        employee.ci.toLowerCase().includes(lowercasedQuery) ||
+        employee.name.toLowerCase().includes(lowercasedQuery) ||
+        employee.department.toLowerCase().includes(lowercasedQuery) ||
+        employee.position.toLowerCase().includes(lowercasedQuery) ||
+        employee.salary.toLowerCase().includes(lowercasedQuery) ||
+        employee.startDate.toLowerCase().includes(lowercasedQuery) ||
+        employee.phone.toLowerCase().includes(lowercasedQuery) ||
+        employee.email.toLowerCase().includes(lowercasedQuery) ||
+        employee.address.toLowerCase().includes(lowercasedQuery) ||
+        employee.birthDate.toLowerCase().includes(lowercasedQuery)
     );
     setFilteredEmployees(filtered);
     setCurrentPage(1);
@@ -124,10 +115,7 @@ const Employees = () => {
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = filteredEmployees.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredEmployees.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredEmployees.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (pageNumber) => {
@@ -136,34 +124,30 @@ const Employees = () => {
 
   const handleAddEditEmployee = (employeeData) => {
     if (currentEmployee) {
-      setEmployees(
-        employees.map((emp) =>
-          emp.id === currentEmployee.id ? employeeData : emp
-        )
+      const updatedEmployees = employees.map((emp) =>
+        emp.id === currentEmployee.id ? employeeData : emp
       );
-      setFilteredEmployees(
-        filteredEmployees.map((emp) =>
-          emp.id === currentEmployee.id ? employeeData : emp
-        )
-      );
+      setEmployees(updatedEmployees);
+      setFilteredEmployees(updatedEmployees);
     } else {
       const newEmployee = { ...employeeData, id: employees.length + 1 };
-      setEmployees([...employees, newEmployee]);
-      setFilteredEmployees([...filteredEmployees, newEmployee]);
+      const updatedEmployees = [...employees, newEmployee];
+      setEmployees(updatedEmployees);
+      setFilteredEmployees(updatedEmployees);
     }
     closeModal();
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl text-white font-bold mb-4 text-left">
+    <div className="p-4 bg-white dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen">
+      <h1 className="text-2xl font-bold mb-4 text-left">
         Empleados
       </h1>
       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2 sm:gap-0">
         <SearchBar placeholder="Buscar empleados..." onSearch={handleSearch} />
       </div>
       {employees.length === 0 ? (
-        <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
+        <h3 className="text-2xl font-bold mt-8 mb-4 text-center">
           No hay empleados registrados...
         </h3>
       ) : (

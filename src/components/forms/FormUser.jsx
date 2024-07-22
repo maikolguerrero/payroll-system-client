@@ -3,8 +3,8 @@ import formValidation from "../../validations/formValidation";
 import { Contexto } from "../../context/Contexto";
 import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 
-export default function FormUser({user, submit, onClose}) {
-  const { peticionPost } = useContext(Contexto)
+export default function FormUser({ user, submit, onClose }) {
+  const { peticionPost } = useContext(Contexto);
 
   const [values, setValues] = useState({
     name: user ? user.name : '',
@@ -27,46 +27,47 @@ export default function FormUser({user, submit, onClose}) {
     const validateName = formValidation.validateText(values.name);
     const validateUsername = formValidation.validateText(values.username);
     const validatePassword = formValidation.validatePassword(values.password);
-    const validatePasswords = formValidation.validatePasswords(values.password, values.confirmPassword)
+    const validatePasswords = formValidation.validatePasswords(values.password, values.confirmPassword);
 
     // Asignar mensajes si se llena mal el campo
-    if (!validateName) return alertInfo('Por favor ingrese su nombre.')
-    if (!validateUsername) return alertInfo('Por favor ingrese un Usuario.')
-    if (!validatePassword) return alertInfo('incluir una mayúscula y un número. 6 caracteres min.')
-    if (!validatePasswords) return alertInfo('Las contraseñas no coinciden.')
+    if (!validateName) return alertInfo('Por favor ingrese su nombre.');
+    if (!validateUsername) return alertInfo('Por favor ingrese un Usuario.');
+    if (!validatePassword) return alertInfo('Incluir una mayúscula y un número. 6 caracteres min.');
+    if (!validatePasswords) return alertInfo('Las contraseñas no coinciden.');
 
     if (user) {
-      const respuesta = await peticionPost(`http://localhost:3000/api/users/${user._id}`, "PUT", values)
+      const respuesta = await peticionPost(`http://localhost:3000/api/users/${user._id}`, "PUT", values);
       if (respuesta.message === "Usuario actualizado exitosamente") {
         alertConfirm(respuesta.message);
-        onClose()
-        return 
+        onClose();
+        return;
       } else {
-        alert("Exisito un error revisa la consola");
+        alert("Existió un error, revisa la consola.");
+        console.log(respuesta);
         return setValues({
           name: "",
           username: "",
           password: "",
           confirmPassword: "",
           role: "admin_nomina"
-        })
+        });
       }
     } else {
-      const respuesta = await peticionPost("http://localhost:3000/api/users/register", "POST", values)
+      const respuesta = await peticionPost("http://localhost:3000/api/users/register", "POST", values);
       if (respuesta.message === "Usuario creado exitosamente") {
         alertConfirm(respuesta.message);
-        onClose()
-        return 
+        onClose();
+        return;
       } else {
-        alertError("Exisito un error revisa la consola")
-        console.log(respuesta)
+        alertError("Existió un error, revisa la consola.");
+        console.log(respuesta);
         return setValues({
           name: "",
           username: "",
           password: "",
           confirmPassword: "",
           role: "admin_nomina"
-        })
+        });
       }
     }
   };
@@ -74,11 +75,11 @@ export default function FormUser({user, submit, onClose}) {
   return (
     <>
       <form
-        className="grid grid-cols-1 md:grid-cols-2 gap-3"
+        className="grid grid-cols-1 md:grid-cols-2 gap-3 p-8"
         onSubmit={handleSubmit}
       >
         <div className="mb-4">
-          <label htmlFor="name" className="block text-md font-medium mb-2">
+          <label htmlFor="name" className="block text-md font-roboto-serif font-medium mb-2 text-gray-200 dark:text-gray-300">
             Nombre y Apellido
           </label>
           <input
@@ -87,15 +88,12 @@ export default function FormUser({user, submit, onClose}) {
             name="name"
             value={values.name}
             onChange={handleInputChange}
-            className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline w-full"
           />
         </div>
 
         <div className="mb-4">
-          <label
-            className="block text-md font-medium font-roboto-serif mb-2"
-            htmlFor="username"
-          >
+          <label htmlFor="username" className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300">
             Username
           </label>
           <input
@@ -104,14 +102,12 @@ export default function FormUser({user, submit, onClose}) {
             name="username"
             value={values.username}
             onChange={handleInputChange}
-            className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline bg-gray-300"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline"
           />
         </div>
+        
         <div className="mb-4">
-          <label
-            className="block text-md font-medium font-roboto-serif mb-2"
-            htmlFor="password"
-          >
+          <label htmlFor="password" className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300">
             Contraseña
           </label>
           <input
@@ -120,14 +116,12 @@ export default function FormUser({user, submit, onClose}) {
             name="password"
             value={values.password}
             onChange={handleInputChange}
-            className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-300"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 leading-tight bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:shadow-outline"
           />
         </div>
+        
         <div className="mb-6">
-          <label
-            className="block text-md font-medium font-roboto-serif mb-2"
-            htmlFor="confirmPassword"
-          >
+          <label htmlFor="confirmPassword" className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300">
             Confirmar Contraseña
           </label>
           <input
@@ -136,9 +130,10 @@ export default function FormUser({user, submit, onClose}) {
             name="confirmPassword"
             value={values.confirmPassword}
             onChange={handleInputChange}
-            className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline bg-gray-300"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 leading-tight bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:shadow-outline"
           />
         </div>
+        
         <div className="col-span-2 flex justify-center">
           <button
             type="submit"

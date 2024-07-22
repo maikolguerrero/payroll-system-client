@@ -4,7 +4,7 @@ import FormRegister from "../components/forms/FormRegister";
 
 const Register = () => {
   return (
-    <div className="min-h-screen bg-principalAzul p-4 flex flex-col items-center relative">
+    <div className="min-h-screen bg-principalAzul  dark:bg-gray-900 p-4 flex flex-col items-center relative">
        {/* Encabezado */}
        <Header />
        <FormRegister />
