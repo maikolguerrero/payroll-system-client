@@ -272,6 +272,18 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
 
                 <li>
                   <NavLink
+                    to={paths.BANKS_SYSTEM_PATH}
+                    className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
+                  >
+                  <FiBarChart2 className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                    <span className="flex-1 ml-2 whitespace-nowrap">
+                      Bancos del sistema
+                    </span>
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
                     to={paths.COMPANY_SETTINGS_PATH}
                     className={`flex items-center p-2 rounded-lg ${
                       isSidebarOpen

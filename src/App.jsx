@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import Dashboard from "./views/Dashboard";
-import Payroll from "./views/Payroll";
-import Employees from "./views/Employees";
-import Departments from "./views/Departments";
-import Positions from "./views/Positions";
-import Reports from "./views/Reports";
-import PerceptionsDeductions from "./views/PerceptionsDeductions";
-import Attendances from "./views/Attendances";
-import Banks from "./views/Banks";
-import Settings from "./views/Settings";
-import CompanySettings from "./views/CompanySettings";
-import UserProfile from "./views/UserProfile";
-import Users from "./views/admin/Users";
-import paths from "./config/routePaths";
+import React, { useState, useEffect } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { FiMenu } from "react-icons/fi";
+import Sidebar from './components/Sidebar';
+import Dashboard from './views/Dashboard';
+import Payroll from './views/Payroll';
+import Employees from './views/Employees';
+import Departments from './views/Departments';
+import Positions from './views/Positions';
+import Reports from './views/Reports';
+import PerceptionsDeductions from './views/PerceptionsDeductions';
+import Attendances from './views/Attendances';
+import Banks from './views/Banks';
+import BanksSystem from './views/admin/BanksSystem';
+import Settings from './views/Settings';
+import CompanySettings from './views/CompanySettings';
+import UserProfile from './views/UserProfile';
+import Users from './views/admin/Users';
+import paths from './config/routePaths';
 import Login from "./views/Login";
 import Register from "./views/Register";
 import CompanyRegister from "./views/CompanyRegister";
@@ -93,63 +94,22 @@ export default function App() {
           ${isDisableSidebar ? "" : "md:ml-56"}`}
       >
         {/* Configuración de las rutas principales y sus componentes */}
-        <Routes>
-          <Route
-            index
-            element={<ProtectedRoute adminComponent={Dashboard} />}
-          />
-          <Route
-            path={paths.DASHBOARD_PATH}
-            element={<ProtectedRoute adminComponent={Dashboard} />}
-          />
-          <Route
-            path={paths.PAYROLL_PATH}
-            element={<ProtectedRoute adminComponent={Payroll} />}
-          />
-          <Route
-            path={paths.EMPLOYEES_PATH}
-            element={<ProtectedRoute adminComponent={Employees} />}
-          />
-          <Route
-            path={paths.DEPARTMENTS_PATH}
-            element={<ProtectedRoute adminComponent={Departments} />}
-          />
-          <Route
-            path={paths.POSITIONS_PATH}
-            element={<ProtectedRoute adminComponent={Positions} />}
-          />
-          <Route
-            path={paths.REPORTS_PATH}
-            element={<ProtectedRoute adminComponent={Reports} />}
-          />
-          <Route
-            path={paths.PERCEPTIONS_DEDUCTIONS_PATH}
-            element={<ProtectedRoute adminComponent={PerceptionsDeductions} />}
-          />
-          <Route
-            path={paths.ATTENDANCES_PATH}
-            element={<ProtectedRoute adminComponent={Attendances} />}
-          />
-          <Route
-            path={paths.BANKS_PATH}
-            element={<ProtectedRoute adminComponent={Banks} />}
-          />
-          <Route
-            path={paths.SETTINGS_PATH}
-            element={<ProtectedRoute adminComponent={Settings} />}
-          />
-          <Route
-            path={paths.COMPANY_SETTINGS_PATH}
-            element={<ProtectedRoute adminComponent={CompanySettings} />}
-          />
-          <Route
-            path={paths.USER_PROFILE_PATH}
-            element={<ProtectedRoute adminComponent={UserProfile} />}
-          />
-          <Route
-            path={paths.USERS_PATH}
-            element={<ProtectedRoute adminComponent={Users} />}
-          />
+          <Routes>
+            <Route index element={<ProtectedRoute adminComponent={Dashboard} />} />
+            <Route path={paths.DASHBOARD_PATH} element={<ProtectedRoute adminComponent={Dashboard} />} />
+            <Route path={paths.PAYROLL_PATH} element={<ProtectedRoute adminComponent={Payroll} />} />
+            <Route path={paths.EMPLOYEES_PATH} element={<ProtectedRoute adminComponent={Employees} />} />
+            <Route path={paths.DEPARTMENTS_PATH} element={<ProtectedRoute adminComponent={Departments} />} />
+            <Route path={paths.POSITIONS_PATH} element={<ProtectedRoute adminComponent={Positions} />} />
+            <Route path={paths.REPORTS_PATH} element={<ProtectedRoute adminComponent={Reports} />} />
+            <Route path={paths.PERCEPTIONS_DEDUCTIONS_PATH} element={<ProtectedRoute adminComponent={PerceptionsDeductions} />} />
+            <Route path={paths.ATTENDANCES_PATH} element={<ProtectedRoute adminComponent={Attendances} />} />
+            <Route path={paths.BANKS_PATH} element={<ProtectedRoute adminComponent={Banks} />} />
+            <Route path={paths.SETTINGS_PATH} element={<ProtectedRoute adminComponent={Settings} />} />
+            <Route path={paths.COMPANY_SETTINGS_PATH} element={<ProtectedRoute adminComponent={CompanySettings} />} />
+            <Route path={paths.USER_PROFILE_PATH} element={<ProtectedRoute adminComponent={UserProfile} />} />
+            <Route path={paths.USERS_PATH} element={<ProtectedRoute adminComponent={Users} />} />
+            <Route path={paths.BANKS_SYSTEM_PATH} element={<ProtectedRoute adminComponent={BanksSystem} />} />
 
           {/* Rutas públicas */}
           <Route
