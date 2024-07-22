@@ -1,52 +1,99 @@
-import { Label, TextInput } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Contexto } from "../../context/Contexto";
+import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
+import formValidation from "../../validations/formValidation";
 
-export default function FormBank({ submit, bank }) {
+export default function FormBank({ submit, bank, onClose }) {
+  const { employeesData, banksData, peticionPost } = useContext(Contexto);
 
-  const [state, setState] = useState({});
+  const [values, setValues] = useState({
+    bank_id: bank ? bank.bank_id : "",
+    employee_id: bank ? bank.employee_id : "",
+    account_number: bank ? bank.account_number : "",
+    account_type: bank ? bank.account_type : "",
+  });
 
-  useEffect(() => {
-    if (bank != null) {
-      setState(bank);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
+  const validation = () => {
+    for (let key in values) {
+      let error = formValidation.validateText(values[key].toString());
+      if (!error) return "Completa todos los datos";
     }
-  }, [bank]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validate = validation();
+    if (validate) return alertInfo(validate);
+    
+    
+    if (bank) {
+      const respuesta = await peticionPost(
+        `http://localhost:3000/api/banks_accounts/${bank._id}`,
+        "PUT",
+        values
+      );
+      if (respuesta.message) {
+        alertConfirm(respuesta.message);
+        return onClose();
+      } else {
+        alert("Existio un error revisa la consola");
+        return console.log(respuesta);
+      }
+    } else {
+      const respuesta = await peticionPost(
+        "http://localhost:3000/api/banks_accounts",
+        "POST",
+        values
+      );
+      if (respuesta.message) {
+        alertConfirm(respuesta.message);
+        return onClose();
+      } else {
+        alertError("Exisito un error revisa la consola");
+        return console.log(respuesta);
+      }
+    }
+  };
 
   return (
     <>
-      <form className="p-8 flex flex-col items-center">
+      <form className="p-8 flex flex-col items-center" onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-x-12 w-full">
           {/* Campo Banco */}
           <div className="mb-4">
             <label
-              htmlFor="bank"
+              htmlFor="bank_id"
               className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
               Banco
             </label>
-            <input
-              type="text"
-              id="bank"
-              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
-            />
-          </div>
-          {/* Campo Codigo */}
-          <div className="mb-4">
-            <label
-              htmlFor="code"
-              className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
+            <select
+              id="bank_id"
+              name="bank_id"
+              value={values.bank_id}
+              onChange={handleInputChange}
+               className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             >
-              Código
-            </label>
-            <input
-              type="text"
-              id="code"
-              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
-            />
+              <option value="">Selecciona un empleado</option>
+              {banksData.map((item, index) => (
+                <option key={index} value={item._id}>
+                  {`${item.name}`}
+                </option>
+              ))}
+            </select>
           </div>
           {/* Campo Numero de Cuenta */}
           <div className="mb-4">
             <label
-              htmlFor="number_account"
+              htmlFor="account_number"
               className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
               Número de Cuenta
@@ -55,49 +102,54 @@ export default function FormBank({ submit, bank }) {
               type="text"
               id="number_account"
               className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
+              id="account_number"
+              name="account_number"
+              value={values.account_number}
+              onChange={handleInputChange}
+              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             />
           </div>
           {/* Campo Titular */}
           <div className="mb-4">
             <label
-              htmlFor="owner"
+              htmlFor="employee_id"
               className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
-              Titular
+              Empleado
             </label>
-            <input
-              type="text"
-              id="owner"
+            <select
+              id="employee_id"
+              name="employee_id"
+              value={values.employee_id}
+              onChange={handleInputChange}
               className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
-            />
-          </div>
-          {/* Campo Identificación */}
-          <div className="mb-4">
-            <label
-              htmlFor="identification"
-              className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
-              Identificación
-            </label>
-            <input
-              type="text"
-              id="identification"
-              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
-            />
+              <option value="">Selecciona un empleado</option>
+              {employeesData.map((item, index) => (
+                <option key={index} value={item._id}>
+                  {`${item.name} ${item.surnames}`}
+                </option>
+              ))}
+            </select>
           </div>
+
           {/* Campo Tipo de Cuenta */}
           <div className="mb-4">
             <label
-              htmlFor="type"
-              className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
+              htmlFor="account_type"
+                 className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
             >
               Tipo de Cuenta
             </label>
             <select
-              id="type"
-              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
+              type="text"
+              id="account_type"
+              name="account_type"
+              value={values.account_type}
+              onChange={handleInputChange}
+               className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             >
-              <option value=""></option>
+              <option value="">Seleccione un tipo</option>
               <option value="Ahorro">Ahorro</option>
               <option value="Corriente">Corriente</option>
             </select>
