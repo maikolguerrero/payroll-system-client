@@ -103,10 +103,10 @@ const Employees = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl text-white font-bold mb-4 text-left">Empleados</h1>
+    <div className="p-4 dark:bg-gray-900">
+      <h1 className="text-2xl text-white dark:text-gray-100 font-bold mb-4 text-left">Empleados</h1>
       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2 sm:gap-0">
-      <SearchBar placeholder="Buscar empleados..." onSearch={handleSearch} />
+        <SearchBar placeholder="Buscar empleados..." onSearch={handleSearch} />
       </div>
       <Table columns={columns} data={currentItems} onEdit={openEditModal} onDelete={openDeleteModal} />
       <Pagination

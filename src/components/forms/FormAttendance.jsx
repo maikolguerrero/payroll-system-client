@@ -18,7 +18,7 @@ export default function FormAttendance({ employees }) {
     <form className="space-y-4">
       {/* Campo Empleado y Buscador */}
       <div className="mb-4">
-        <label htmlFor="employee" className="block text-md font-medium mb-2">
+        <label htmlFor="employee" className="block text-md font-medium mb-2 text-gray-200 dark:text-gray-300">
           Empleado
         </label>
         <div className="flex flex-col md:flex-row md:items-center md:space-x-2">
@@ -27,7 +27,7 @@ export default function FormAttendance({ employees }) {
               id="employee"
               value={selectedEmployee}
               onChange={(e) => setSelectedEmployee(e.target.value)}
-              className="shadow appearance-none border border-gray-300 rounded-lg py-2 px-3 text-gray-800 leading-tight bg-gray-300 w-full"
+              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 w-full"
             >
               <option value="">Seleccionar empleado</option>
               {employees.map(employee => (
@@ -45,7 +45,7 @@ export default function FormAttendance({ employees }) {
 
       {/* Campo Fecha */}
       <div className="mb-4">
-        <label htmlFor="date" className="block text-md font-medium mb-2">
+        <label htmlFor="date" className="block text-md font-medium mb-2 text-gray-200 dark:text-gray-300">
           Fecha
         </label>
         <input
@@ -53,14 +53,14 @@ export default function FormAttendance({ employees }) {
           id="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="shadow appearance-none border border-gray-300 rounded-lg py-2 px-3 w-full text-gray-800 leading-tight bg-gray-300"
+          className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
         />
       </div>
 
       {/* Campos Hora Ingreso y Hora Salida */}
       <div className="mb-4 flex items-center space-x-4">
         <div className="w-full">
-          <label htmlFor="entry-time" className="block text-md font-medium mb-2">
+          <label htmlFor="entry-time" className="block text-md font-medium mb-2 text-gray-200 dark:text-gray-300">
             Hora de Ingreso
           </label>
           <input
@@ -68,11 +68,11 @@ export default function FormAttendance({ employees }) {
             id="entry-time"
             value={entryTime}
             onChange={(e) => setEntryTime(e.target.value)}
-            className="shadow appearance-none border border-gray-300 rounded-lg py-2 px-3 w-full text-gray-800 leading-tight bg-gray-300"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
           />
         </div>
         <div className="w-full">
-          <label htmlFor="exit-time" className="block text-md font-medium mb-2">
+          <label htmlFor="exit-time" className="block text-md font-medium mb-2 text-gray-200 dark:text-gray-300">
             Hora de Salida
           </label>
           <input
@@ -80,7 +80,7 @@ export default function FormAttendance({ employees }) {
             id="exit-time"
             value={exitTime}
             onChange={(e) => setExitTime(e.target.value)}
-            className="shadow appearance-none border border-gray-300 rounded-lg py-2 px-3 w-full text-gray-800 leading-tight bg-gray-300"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
           />
         </div>
       </div>
@@ -89,7 +89,7 @@ export default function FormAttendance({ employees }) {
       <div className="flex items-center justify-end">
         <button
           type="submit"
-          className="bg-principalAzulTono5 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline leading-tight"
+          className="bg-principalAzulTono5 hover:bg-principalAzulTono4 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline leading-tight"
         >
           Guardar
         </button>

@@ -66,9 +66,9 @@ const FormPositions = ({ position, onSubmit }) => {
   };
 
   return (
-    <form className="grid grid-cols-1 md:grid-cols-2 gap-3" onSubmit={handleSubmit}>
+    <form className="grid grid-cols-1 md:grid-cols-2 gap-3 p-4 bg-white dark:bg-gray-800" onSubmit={handleSubmit}>
       <div className="mb-4">
-        <label htmlFor="name" className="block text-sm font-medium mb-2">
+        <label htmlFor="name" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-200">
           Nombre
         </label>
         <input
@@ -77,12 +77,12 @@ const FormPositions = ({ position, onSubmit }) => {
           name="name"
           value={values.name}
           onChange={handleInputChange}
-          className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-11/12 focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border border-transparent rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 w-full focus:outline-none focus:shadow-outline"
         />
       </div>
 
       <div className="mb-4">
-        <label htmlFor="description" className="block text-sm font-medium mb-2">
+        <label htmlFor="description" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-200">
           Descripción
         </label>
         <input
@@ -90,12 +90,12 @@ const FormPositions = ({ position, onSubmit }) => {
           name="description"
           value={values.description}
           onChange={handleInputChange}
-          className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border border-transparent rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 w-full focus:outline-none focus:shadow-outline"
         />
       </div>
 
       <div className="mb-4">
-        <label htmlFor="salary" className="block text-sm font-medium mb-2">
+        <label htmlFor="salary" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-200">
           Salario Base
         </label>
         <input
@@ -105,12 +105,12 @@ const FormPositions = ({ position, onSubmit }) => {
           value={values.salary}
           onChange={handleInputChange}
           min="1"
-          className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-11/12 focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border border-transparent rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 w-full focus:outline-none focus:shadow-outline"
         />
       </div>
 
       <div className="mb-4">
-        <label htmlFor="hourlyRate" className="block text-sm font-medium mb-2">
+        <label htmlFor="hourlyRate" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-200">
           Horas Diarias
         </label>
         <input
@@ -120,12 +120,12 @@ const FormPositions = ({ position, onSubmit }) => {
           value={values.hourlyRate}
           onChange={handleInputChange}
           min="1"
-          className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-full focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border border-transparent rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 w-full focus:outline-none focus:shadow-outline"
         />
       </div>
 
       <div>
-        <label htmlFor="period" className="block text-sm font-medium mb-2">
+        <label htmlFor="period" className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-200">
           Periodo de pago
         </label>
         <select
@@ -134,7 +134,7 @@ const FormPositions = ({ position, onSubmit }) => {
           value={values.period}
           onChange={handleInputChange}
           required
-          className="shadow appearance-none border-transparent rounded-[9px] py-2 px-4 text-gray-800 leading-tight bg-gray-300 w-11/12 focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border border-transparent rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 w-full focus:outline-none focus:shadow-outline"
         >
           <option value="" disabled>Seleccionar periodo</option>
           <option value="Diario">Diario</option>
@@ -145,7 +145,7 @@ const FormPositions = ({ position, onSubmit }) => {
       </div>
 
       <div className="mb-4 col-span-2">
-        <h2 className="text-sm font-semibold mb-4">Días de trabajo:</h2>
+        <h2 className="text-sm font-semibold mb-4 text-gray-900 dark:text-gray-200">Días de trabajo:</h2>
         <div className="flex flex-wrap gap-2 ml-8">
           {daysOfWeek.slice(0, 4).map(day => (
             <CheckboxDay
@@ -186,7 +186,7 @@ const FormPositions = ({ position, onSubmit }) => {
 const CheckboxDay = ({ label, value, checked, onChange }) => {
   return (
     <div className="flex items-center">
-      <label htmlFor={value} className="font-medium mr-2">{label}</label>
+      <label htmlFor={value} className="font-medium mr-2 text-gray-900 dark:text-gray-200">{label}</label>
       <input
         type="checkbox"
         id={value}
@@ -194,7 +194,7 @@ const CheckboxDay = ({ label, value, checked, onChange }) => {
         value={value}
         checked={checked}
         onChange={onChange}
-        className="form-checkbox text-black h-5 w-5"
+        className="form-checkbox h-5 w-5 text-principalAzulTono4 dark:text-principalAzulTono4"
       />
     </div>
   );

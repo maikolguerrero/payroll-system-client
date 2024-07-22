@@ -1,3 +1,4 @@
+import React from 'react';
 import CardRute from "../components/CardRute";
 import {
   FiUsers,
@@ -25,15 +26,15 @@ const card = [
 
 export default function Dashboard() {
   return (
-    <>
-      <div className="p-8">
-        <h1 className="text-2xl text-white font-bold mb-4 text-left">Dashboard</h1>
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-12">
-          {card.map((item, index) => (
-            <CardRute key={index} icon={item.icon} title={item.title}/>
-          ))}
-        </section>
-      </div>
-    </>
+    <div className="p-8 bg-principalAzul dark:bg-gray-900 min-h-screen">
+      <h1 className="text-2xl text-white dark:text-gray-100 font-bold mb-4 text-left">
+        Dashboard
+      </h1>
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-12">
+        {card.map((item, index) => (
+          <CardRute key={index} icon={item.icon} title={item.title}/>
+        ))}
+      </section>
+    </div>
   );
 }
