@@ -76,7 +76,7 @@ export default function FormAttendance({ employees, current }) {
     <form className="space-y-4" onSubmit={handleSubmit}>
       {/* Campo Empleado y Buscador */}
       <div className="mb-4">
-        <label htmlFor="employee_id" className="block text-md font-medium mb-2 text-gray-200 dark:text-gray-300">
+        <label htmlFor="employee_id" className="block text-md font-medium mb-2 text-black dark:text-gray-300">
 
           Empleado
         </label>
@@ -87,7 +87,7 @@ export default function FormAttendance({ employees, current }) {
               name='employee_id'
               value={values.employee_id}
               onChange={handleInputChange}
-              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 w-full"
+              className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 text-black dark:text-gray-300 leading-tight bg-gray-300 dark:bg-gray-700 w-full"
             >
               <option value="">Seleccionar empleado</option>
               {employees.map(employee => (
@@ -105,7 +105,7 @@ export default function FormAttendance({ employees, current }) {
 
       {/* Campo Fecha */}
       <div className="mb-4">
-        <label htmlFor="date" className="block text-md font-medium mb-2 text-gray-200 dark:text-gray-300">
+        <label htmlFor="date" className="block text-md font-medium mb-2 text-black dark:text-gray-300">
           Fecha
         </label>
         <input
@@ -113,14 +113,14 @@ export default function FormAttendance({ employees, current }) {
           name='date'
           value={values.date}
           onChange={handleInputChange}
-          className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
+          className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-black dark:text-gray-300 leading-tight bg-gray-300 dark:bg-gray-700"
         />
       </div>
 
       {/* Campos Hora Ingreso y Hora Salida */}
       <div className="mb-4 flex items-center space-x-4">
         <div className="w-full">
-          <label htmlFor="entry_time" className="block text-md font-medium mb-2 text-gray-200 dark:text-gray-300">
+          <label htmlFor="entry_time" className="block text-md font-medium mb-2 text-black dark:text-gray-300">
             Hora de Ingreso
           </label>
           <input
@@ -129,11 +129,11 @@ export default function FormAttendance({ employees, current }) {
             name='entry_time'
             value={values.entry_time}
             onChange={handleInputChange}
-            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-black dark:text-gray-300 leading-tight bg-gray-300 dark:bg-gray-700"
           />
         </div>
         <div className="w-full">
-          <label htmlFor="exit-time" className="block text-md font-medium mb-2 text-gray-200 dark:text-gray-300">
+          <label htmlFor="exit-time" className="block text-md font-medium mb-2 text-black dark:text-gray-300">
             Hora de Salida
           </label>
           <input
@@ -142,12 +142,7 @@ export default function FormAttendance({ employees, current }) {
             value={values.exit_time}
             name='exit_time'
             onChange={handleInputChange}
-            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
-            id="exit_time"
-            value={values.exit_time}
-            name='exit_time'
-            onChange={handleInputChange}
-            className="shadow appearance-none border border-gray-300 rounded-lg py-2 px-3 w-full text-gray-800 leading-tight bg-gray-300"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-lg py-2 px-3 w-full text-black dark:text-gray-300 leading-tight bg-gray-300 dark:bg-gray-700"
           />
         </div>
       </div>

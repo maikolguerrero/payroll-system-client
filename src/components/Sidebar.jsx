@@ -47,7 +47,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
     >
       <div
         className={`h-full flex flex-col justify-between px-2 ${
-          isSidebarOpen ? "bg-white" : "bg-principalAzulTono5 text-white"
+          isSidebarOpen ? "bg-principalAzulTono5" : "bg-principalAzulTono5 text-white"
         } dark:bg-gray-800 dark:text-white scrollbar-hidden`}
       >
         <div>
@@ -74,7 +74,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.DASHBOARD_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? "hover:bg-gray-200"
+                    ? "text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -91,7 +91,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.PAYROLL_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? "hover:bg-gray-200"
+                    ? "text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -108,7 +108,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.EMPLOYEES_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? " hover:bg-gray-200"
+                    ? " text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -125,7 +125,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.DEPARTMENTS_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? " hover:bg-gray-200"
+                    ? " text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -144,7 +144,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.POSITIONS_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? " hover:bg-gray-200"
+                    ? " text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -161,7 +161,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.REPORTS_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? " hover:bg-gray-200"
+                    ? " text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -178,7 +178,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.PERCEPTIONS_DEDUCTIONS_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? " hover:bg-gray-200"
+                    ? " text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -197,7 +197,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.ATTENDANCES_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? " hover:bg-gray-200"
+                    ? " text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -216,7 +216,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.BANKS_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? " hover:bg-gray-200"
+                    ? " text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -233,7 +233,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.SETTINGS_PATH}
                 className={`flex items-center p-2 rounded-lg ${
                   isSidebarOpen
-                    ? " hover:bg-gray-200"
+                    ? " text-white hover:bg-principalAzulTono2"
                     : "text-white hover:bg-principalAzulTono2"
                 } dark:hover:bg-gray-700 group`}
               >
@@ -255,7 +255,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                     to={paths.USERS_PATH}
                     className={`flex items-center p-2 rounded-lg ${
                       isSidebarOpen
-                        ? " hover:bg-gray-200"
+                        ? " text-white hover:bg-principalAzulTono2"
                         : "text-white hover:bg-principalAzulTono2"
                     } dark:hover:bg-gray-700 group`}
                   >
@@ -287,7 +287,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                     to={paths.COMPANY_SETTINGS_PATH}
                     className={`flex items-center p-2 rounded-lg ${
                       isSidebarOpen
-                        ? " hover:bg-gray-200"
+                        ? " text-white hover:bg-principalAzulTono2"
                         : "text-white hover:bg-principalAzulTono2"
                     } dark:hover:bg-gray-700 group`}
                   >

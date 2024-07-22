@@ -79,7 +79,7 @@ export default function FormUser({ user, submit, onClose }) {
         onSubmit={handleSubmit}
       >
         <div className="mb-4">
-          <label htmlFor="name" className="block text-md font-roboto-serif font-medium mb-2 text-gray-200 dark:text-gray-300">
+          <label htmlFor="name" className="block text-md font-roboto-serif font-medium mb-2 text-black dark:text-gray-300">
             Nombre y Apellido
           </label>
           <input
@@ -88,12 +88,12 @@ export default function FormUser({ user, submit, onClose }) {
             name="name"
             value={values.name}
             onChange={handleInputChange}
-            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline w-full"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[9px] py-2 px-4 text-gray-800 dark:text-gray-300 leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline w-full"
           />
         </div>
 
         <div className="mb-4">
-          <label htmlFor="username" className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300">
+          <label htmlFor="username" className="block text-md font-medium font-roboto-serif mb-2 text-black dark:text-gray-300">
             Username
           </label>
           <input
@@ -102,12 +102,12 @@ export default function FormUser({ user, submit, onClose }) {
             name="username"
             value={values.username}
             onChange={handleInputChange}
-            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-300 leading-tight bg-gray-300 dark:bg-gray-700 focus:outline-none focus:shadow-outline"
           />
         </div>
         
         <div className="mb-4">
-          <label htmlFor="password" className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300">
+          <label htmlFor="password" className="block text-md font-medium font-roboto-serif mb-2 text-black dark:text-gray-300">
             Contraseña
           </label>
           <input
@@ -116,12 +116,12 @@ export default function FormUser({ user, submit, onClose }) {
             name="password"
             value={values.password}
             onChange={handleInputChange}
-            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 leading-tight bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 leading-tight bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 focus:outline-none focus:shadow-outline"
           />
         </div>
         
         <div className="mb-6">
-          <label htmlFor="confirmPassword" className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300">
+          <label htmlFor="confirmPassword" className="block text-md font-medium font-roboto-serif mb-2 text-black dark:text-gray-300">
             Confirmar Contraseña
           </label>
           <input
@@ -130,7 +130,7 @@ export default function FormUser({ user, submit, onClose }) {
             name="confirmPassword"
             value={values.confirmPassword}
             onChange={handleInputChange}
-            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 leading-tight bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded-[10px] w-full py-2 px-3 leading-tight bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 focus:outline-none focus:shadow-outline"
           />
         </div>
         

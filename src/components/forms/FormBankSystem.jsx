@@ -5,7 +5,7 @@ import formValidation from "../../validations/formValidation";
 import { Contexto } from "../../context/Contexto";
 
 export default function FormBankSystem({ submit, bank, onClose }) {
-  const { peticionPost } = useContext(Contexto)
+  const { peticionPost } = useContext(Contexto);
 
   const [values, setValues] = useState({
     name: bank ? bank.name : "",
@@ -42,7 +42,7 @@ export default function FormBankSystem({ submit, bank, onClose }) {
         alertConfirm(respuesta.message);
         return onClose();
       } else {
-        alert("Existio un error revisa la consola");
+        alert("Existió un error, revisa la consola");
         return console.log(respuesta);
       }
     } else {
@@ -55,7 +55,7 @@ export default function FormBankSystem({ submit, bank, onClose }) {
         alertConfirm(respuesta.message);
         return onClose();
       } else {
-        alertError("Exisito un error revisa la consola");
+        alertError("Existió un error, revisa la consola");
         return console.log(respuesta);
       }
     }
@@ -63,7 +63,7 @@ export default function FormBankSystem({ submit, bank, onClose }) {
 
   return (
     <>
-      <form className="p-8 flex flex-col items-center" onSubmit={handleSubmit}>
+      <form className="p-8 flex flex-col items-center bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-x-12 w-full">
           {/* Campo Name */}
           <div className="mb-4">
@@ -79,7 +79,7 @@ export default function FormBankSystem({ submit, bank, onClose }) {
               name="name"
               value={values.name}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
+              className="shadow-md appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-900 dark:text-gray-100 leading-tight bg-gray-200 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           {/* Campo Codigo */}
@@ -96,11 +96,11 @@ export default function FormBankSystem({ submit, bank, onClose }) {
               name="code"
               value={values.code}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
+              className="shadow-md appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-900 dark:text-gray-100 leading-tight bg-gray-200 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
-        <button className="rounded-xl bg-principalAzulTono5 px-12 py-2 mt-12 text-white text-xl">
+        <button className="rounded-xl bg-principalAzulTono5 px-12 py-2 mt-12 text-white text-xl hover:bg-principalAzulTono6 dark:bg-blue-600 dark:hover:bg-blue-700">
           {submit}
         </button>
       </form>

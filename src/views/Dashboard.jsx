@@ -174,8 +174,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="p-8 bg-white dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen">
-        <h1 className="text-2xl font-bold mb-4 text-left">
+      <div className="p-8 bg-principalAzul dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen">
+        <h1 className="text-2xl text-white font-bold mb-4 text-left">
           Dashboard
         </h1>
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-12">

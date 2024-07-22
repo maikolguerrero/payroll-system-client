@@ -151,7 +151,7 @@ export default function Attendances() {
           <input
             type="date"
             id="attendacancesDate"
-            className="w-full sm:w-auto shadow appearance-none border border-gray-300 rounded-lg py-2 px-3 text-black leading-tight bg-white mt-2 sm:mt-0"
+            className="w-full sm:w-auto shadow appearance-none border border-gray-300 dark:border-gray-500 dark:text-gray-300 dark:bg-gray-700 rounded-lg py-2 px-3 text-black leading-tight bg-white mt-2 sm:mt-0"
             value={date}
             max={currentDate}
             onChange={handleDateChange}

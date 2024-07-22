@@ -139,15 +139,15 @@ const Employees = () => {
   };
 
   return (
-    <div className="p-4 bg-white dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen">
-      <h1 className="text-2xl font-bold mb-4 text-left">
+    <div className="p-4 bg-principalAzul dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen">
+      <h1 className="text-2xl text-white font-bold mb-4 text-left">
         Empleados
       </h1>
       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2 sm:gap-0">
         <SearchBar placeholder="Buscar empleados..." onSearch={handleSearch} />
       </div>
       {employees.length === 0 ? (
-        <h3 className="text-2xl font-bold mt-8 mb-4 text-center">
+        <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
           No hay empleados registrados...
         </h3>
       ) : (

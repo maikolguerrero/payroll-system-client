@@ -146,7 +146,7 @@ export default function PerceptionsDeductions() {
             name="type-cost"
             id="type-cost"
             onChange={(e) => handleChangeType(e.currentTarget.value)}
-            className="w-1/3 shadow appearance-none border-transparent rounded-[10px] py-2 px-3 text-gray-800 leading-tight bg-white"
+            className="w-1/3 shadow appearance-none border-transparent rounded-[10px] py-2 px-3 text-gray-800 dark:text-white dark:bg-gray-700 leading-tight bg-white"
           >
             <option value="Percepciones">Percepciones</option>
             <option value="Deducciones">Deducciones</option>

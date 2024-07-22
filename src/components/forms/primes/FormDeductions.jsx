@@ -89,7 +89,7 @@ export default function FormDeductions({ submit, current, table, onClose }) {
           <div className="mb-4">
             <label
               htmlFor="type"
-              className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
+              className="block text-md font-medium font-roboto-serif mb-2 text-black dark:text-gray-300"
             >
               Tipo
             </label>
@@ -99,14 +99,14 @@ export default function FormDeductions({ submit, current, table, onClose }) {
               name="type"
               value={values.type}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
+              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-black dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             />
           </div>
           {/* Campo Fecha */}
           <div className="mb-4">
             <label
               htmlFor="date"
-              className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
+              className="block text-md font-medium font-roboto-serif mb-2 text-black dark:text-gray-300"
             >
               Fecha
             </label>
@@ -116,7 +116,7 @@ export default function FormDeductions({ submit, current, table, onClose }) {
               name="date"
               value={values.date}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
+              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-black dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             />
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function FormDeductions({ submit, current, table, onClose }) {
         <div className="mb-4 w-full">
             <label
               htmlFor="amount"
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
+              className="block text-md font-medium font-roboto-serif mb-2 text-black dark:text-gray-300"
             >
               Monto
             </label>
@@ -135,14 +135,14 @@ export default function FormDeductions({ submit, current, table, onClose }) {
               name="amount"
               value={values.amount}
               onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
+              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-black dark:text-gray-200 leading-tight bg-gray-300 dark:bg-gray-700"
             />
           </div>
         {/* Campo Descripcion */}
         <div className="mb-4 w-full">
           <label
             htmlFor="description"
-            className="block text-md font-medium font-roboto-serif mb-2 text-gray-200 dark:text-gray-300"
+            className="block text-md font-medium font-roboto-serif mb-2 text-black dark:text-gray-300"
           >
             Descripción
           </label>
