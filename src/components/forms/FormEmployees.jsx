@@ -3,8 +3,14 @@ import { Contexto } from "../../context/Contexto";
 import formValidation from "../../validations/formValidation";
 import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 
-const FormEmployees = ({ employee, onClose }) => {
-  const { departmentsData, positionsData, peticionPost } = useContext(Contexto);
+const FormEmployees = ({ employee, onClose, updates }) => {
+  const {
+    employeesData,
+    setEmployeesData,
+    departmentsData,
+    positionsData,
+    peticionPost,
+  } = useContext(Contexto);
 
   const [values, setValues] = useState({
     ci: employee ? employee.ci : "",
@@ -29,6 +35,26 @@ const FormEmployees = ({ employee, onClose }) => {
     });
   };
 
+  const handleUpdate = (update) => {
+    let array = employeesData;
+    for (let i = 0; i < array.length; i++) {
+      if (array[i]._id === update._id) {
+        array[i] = update;
+      }
+    }
+    setEmployeesData(array)
+    updates(array);
+    onClose();
+  };
+
+  const handleCreate = (create) => {
+    let array = employeesData;
+    array.push(create);
+    setEmployeesData(array)
+    updates(array);
+    onClose();
+  };
+
   const validation = () => {
     for (let key in values) {
       let error = formValidation.validateText(values[key].toString());
@@ -50,7 +76,8 @@ const FormEmployees = ({ employee, onClose }) => {
       if (respuesta.message) {
         alertConfirm(respuesta.message);
         /*onSubmit()*/
-        return onClose();
+        handleUpdate(respuesta.employee)
+        return 
       } else {
         alert("Existio un error revisa la consola");
         return console.log(respuesta);
@@ -64,9 +91,10 @@ const FormEmployees = ({ employee, onClose }) => {
       if (respuesta.message) {
         alertConfirm(respuesta.message);
         /*onSubmit()*/
-        return onClose();
+        handleCreate(respuesta.employee)
+        return
       } else {
-        alertError("Exisito un error revisa la consola");
+        alertError("Existe un error revisa la consola");
         return console.log(respuesta);
       }
     }

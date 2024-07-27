@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { format } from 'date-fns';
 import Modal from "../components/Modal";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import AddButton from "../components/AddButton";
@@ -12,8 +13,8 @@ import { alertConfirm, alertError } from "../components/alerts/alerts";
 const columns = [
   { label: "CI", accessor: "ci" },
   { label: "Nombre", accessor: "name" },
-  { label: "Departamento", accessor: "department_id" },
-  { label: "Cargo", accessor: "position_id" },
+  { label: "Departamento", accessor: "department_name" },
+  { label: "Cargo", accessor: "position_name" },
   { label: "Salario", accessor: "base_salary" },
   { label: "Fecha Ingreso", accessor: "hire_date" },
   { label: "Teléfono", accessor: "phone" },
@@ -25,11 +26,20 @@ const columns = [
 const ITEMS_PER_PAGE = 10;
 
 const Employees = () => {
-  const { employeesData, setEmployeesData, setDepartmentsData, setPositionsData, peticionGet, peticionDelete } =
-    useContext(Contexto);
+  const {
+    employeesData,
+    setEmployeesData,
+    setDepartmentsData,
+    setPositionsData,
+    peticionGet,
+    peticionDelete,
+    departmentsData,
+    positionsData,
+  } = useContext(Contexto);
 
-  const [employees, setEmployees] = useState(employeesData);
-  const [filteredEmployees, setFilteredEmployees] = useState(employeesData);
+  const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [originalEmployeesData, setOriginalEmployeesData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -42,25 +52,96 @@ const Employees = () => {
         "GET"
       );
       setEmployeesData(respuesta);
-      setEmployees(respuesta);
-      const respusta2 = await peticionGet(
+      setOriginalEmployeesData(respuesta); // Guardar los datos originales
+      setFilteredEmployees(respuesta);
+
+      const respuesta2 = await peticionGet(
         "http://localhost:3000/api/departments/all",
         "GET"
       );
-      setDepartmentsData(respusta2);
-      const respusta3 = await peticionGet(
+      setDepartmentsData(respuesta2);
+
+      const respuesta3 = await peticionGet(
         "http://localhost:3000/api/positions/all",
         "GET"
       );
-      setPositionsData(respusta3);
+      setPositionsData(respuesta3);
     };
 
     realizarPeticion();
   }, []);
 
   useEffect(() => {
-    setFilteredEmployees(employeesData);
-  }, [employeesData]);
+    const mapData = () => {
+      // Mapear los datos de empleados para incluir nombres de departamento y cargo
+      const mappedData = employeesData.map((employee) => ({
+        ...employee,
+        department_name:
+          departmentsData.find((dep) => dep._id === employee.department_id)
+            ?.name || "Desconocido",
+        position_name:
+          positionsData.find((pos) => pos._id === employee.position_id)?.name ||
+          "Desconocido",
+        hire_date: format(new Date(employee.hire_date), 'dd/MM/yyyy'), // Formatear la fecha de ingreso
+        birthdate: format(new Date(employee.birthdate), 'dd/MM/yyyy'), // Formatear la fecha de nacimiento
+      }));
+      setFilteredEmployees(mappedData);
+      setOriginalEmployeesData(mappedData); // Actualizar los datos originales cuando cambian
+    };
+
+    mapData();
+  }, [employeesData, departmentsData, positionsData]);
+
+  const handleSearch = (query) => {
+    if (query === null || query.trim() === "") {
+      // Restaurar los datos originales si la consulta está vacía
+      setFilteredEmployees(originalEmployeesData);
+    } else {
+      // Filtrar los datos según la consulta en todos los campos relevantes
+      const filtered = originalEmployeesData.filter((employee) =>
+        employee.ci.toLowerCase().includes(query.toLowerCase()) ||
+        employee.name.toLowerCase().includes(query.toLowerCase()) ||
+        employee.department_name.toLowerCase().includes(query.toLowerCase()) ||
+        employee.position_name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredEmployees(filtered);
+    }
+    setCurrentPage(1); // Resetea la página actual al buscar
+  };
+
+  const handleReset = () => {
+    setFilteredEmployees(originalEmployeesData); // Restaurar los datos originales
+    setCurrentPage(1); // Resetea la página actual
+  };
+
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentItems = filteredEmployees.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredEmployees.length / ITEMS_PER_PAGE);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleLoad = () => {
+    // Mapear los datos de empleados para incluir nombres de departamento y cargo
+    const mappedData = employeesData.map((employee) => ({
+      ...employee,
+      department_name:
+        departmentsData.find((dep) => dep._id === employee.department_id)
+          ?.name || "Desconocido",
+      position_name:
+        positionsData.find((pos) => pos._id === employee.position_id)?.name ||
+        "Desconocido",
+      hire_date: format(new Date(employee.hire_date), 'dd/MM/yyyy'), // Formatear la fecha de ingreso
+      birthdate: format(new Date(employee.birthdate), 'dd/MM/yyyy'), // Formatear la fecha de nacimiento
+    }));
+    setFilteredEmployees(mappedData);
+    setOriginalEmployeesData(mappedData); // Actualizar los datos originales cuando cambian
+  };
 
   const openAddModal = () => {
     setCurrentEmployee(null);
@@ -90,6 +171,7 @@ const Employees = () => {
     setFilteredEmployees(
       filteredEmployees.filter((emp) => emp._id !== currentEmployee._id)
     );
+    setEmployeesData(employeesData.filter((emp) => emp._id !== currentEmployee._id))
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/employees/${currentEmployee._id}`,
@@ -104,65 +186,19 @@ const Employees = () => {
     closeDeleteModal();
   };
 
-  const handleSearch = (query) => {
-    const filtered = employees.filter(
-      (employee) =>
-        employee.ci.toLowerCase().includes(query.toLowerCase()) ||
-        employee.name.toLowerCase().includes(query.toLowerCase()) ||
-        employee.department.toLowerCase().includes(query.toLowerCase()) ||
-        employee.position.toLowerCase().includes(query.toLowerCase()) ||
-        employee.salary.toLowerCase().includes(query.toLowerCase()) ||
-        employee.startDate.toLowerCase().includes(query.toLowerCase()) ||
-        employee.phone.toLowerCase().includes(query.toLowerCase()) ||
-        employee.email.toLowerCase().includes(query.toLowerCase()) ||
-        employee.address.toLowerCase().includes(query.toLowerCase()) ||
-        employee.birthDate.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredEmployees(filtered);
-    setCurrentPage(1);
-  };
-
-  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = filteredEmployees.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-  const totalPages = Math.ceil(filteredEmployees.length / ITEMS_PER_PAGE);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handleAddEditEmployee = (employeeData) => {
-    if (currentEmployee) {
-      setEmployees(
-        employees.map((emp) =>
-          emp.id === currentEmployee.id ? employeeData : emp
-        )
-      );
-      setFilteredEmployees(
-        filteredEmployees.map((emp) =>
-          emp.id === currentEmployee.id ? employeeData : emp
-        )
-      );
-    } else {
-      const newEmployee = { ...employeeData, id: employees.length + 1 };
-      setEmployees([...employees, newEmployee]);
-      setFilteredEmployees([...filteredEmployees, newEmployee]);
-    }
-    closeModal();
-  };
-
   return (
     <div className="p-4">
       <h1 className="text-2xl text-white font-bold mb-4 text-left">
         Empleados
       </h1>
-      <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2 sm:gap-0">
-        <SearchBar placeholder="Buscar empleados..." onSearch={handleSearch} />
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <SearchBar
+          placeholder="Buscar empleados..."
+          onSearch={handleSearch}
+          onReset={handleReset} // Pasar la función de resetear
+        />
       </div>
-      {employees.length === 0 ? (
+      {filteredEmployees.length === 0 ? (
         <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
           No hay empleados registrados...
         </h3>
@@ -189,8 +225,8 @@ const Employees = () => {
       >
         <FormEmployees
           employee={currentEmployee}
-          onSubmit={handleAddEditEmployee}
           onClose={closeModal}
+          updates={handleLoad}
         />
       </Modal>
       <ConfirmDeleteModal

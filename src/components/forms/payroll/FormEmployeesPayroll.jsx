@@ -93,6 +93,10 @@ export default function FormEmployeesPayroll() {
     if (respuesta.message) {
       console.log(respuesta);
       alertConfirm(respuesta.message);
+      
+      if (respuesta.message === "Se generaron algunas nóminas con errores.") {
+        return alertError(respuesta.message);
+      }
       respuesta.payrolls.forEach(item => {
         employees.forEach(item2 => {
           if (item.employee_id === item2._id) {
@@ -252,15 +256,16 @@ export default function FormEmployeesPayroll() {
       {info === null ? (
         <></>
       ) : (
-        <PDFDownloadLink document={<PDF data={info}/>} fileName="ReporteNominaEmpleado.pdf">
-          {({ loading, url, error, blob }) =>
-            loading ? (
-              <button className="text-center w-full text-xl">Loading Document ...</button>
-            ) : (
-              <button className="text-center w-full text-xl">Descargar Reporte en PDF!</button>
-            )
-          }
-        </PDFDownloadLink>
+        
+      <PDFDownloadLink document={<PDF data={info} empleados={employees}/>} fileName="ReporteNominaEmpleado.pdf">
+        {({ loading, url, error, blob }) =>
+          loading ? (
+            <button className="text-center w-full text-xl">Loading Document ...</button>
+          ) : (
+            <button className="text-center w-full text-xl">Descargar Reporte en PDF!</button>
+          )
+        }
+      </PDFDownloadLink>
       )}
     </>
   );

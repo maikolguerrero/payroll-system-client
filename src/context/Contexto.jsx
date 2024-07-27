@@ -15,6 +15,8 @@ export function ContextoProvider(props) {
   const [banksData, setBanksData] = useState([])
   const [banksAcountsData, setBanksAcountsData] = useState([])
   const [attendances, setAttendances] = useState([])
+  const [admins, setAdmins] = useState([])
+  const [company, setCompany] = useState([])
   
   const peticionPost = async (url, metodo, contenido) => {
     try {
@@ -79,6 +81,24 @@ export function ContextoProvider(props) {
       throw error;
     }
   };
+
+  const verificarAdmin = async () => {
+    const respuesta = await peticionGet(
+      "http://localhost:3000/api/users/count-admin-principals",
+      "GET"
+    );
+    setAdmins(respuesta.count)
+    return respuesta.count
+  }
+
+  const verificarCompany = async () => {
+    const respuesta = await peticionGet(
+      "http://localhost:3000/api/company",
+      "GET"
+    );
+    setCompany(respuesta)
+    return respuesta
+  }
 
   const realizarPeticion = async () => {
     const positions = await peticionGet(
@@ -164,7 +184,11 @@ export function ContextoProvider(props) {
       setBanksAcountsData,
       attendances,
       setAttendances,
-      realizarPeticion
+      realizarPeticion,
+      admins,
+      verificarAdmin,
+      verificarCompany,
+      company
     }}>
       {props.children}
     </Contexto.Provider>

@@ -4,7 +4,7 @@ import { Contexto } from "../../context/Contexto";
 import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 
 export default function FormUser({user, submit, onClose}) {
-  const { peticionPost } = useContext(Contexto)
+  const { peticionPost, users, setUsers } = useContext(Contexto)
 
   const [values, setValues] = useState({
     name: user ? user.name : '',
@@ -13,6 +13,23 @@ export default function FormUser({user, submit, onClose}) {
     confirmPassword: '',
     role: user ? user.role : "admin_nomina"
   });
+
+  const handleUpdate = (update) => {
+    let array = users
+    for (let i = 0; i < array.length; i++) {
+      if (array[i]._id === update._id) {
+        array[i] = update
+      }
+    }
+    console.log(array)
+    setUsers(array)
+  }
+
+  const handleCreate = (create) => {
+    let array = users
+    array.push(create);
+    setUsers(array)
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,10 +56,11 @@ export default function FormUser({user, submit, onClose}) {
       const respuesta = await peticionPost(`http://localhost:3000/api/users/${user._id}`, "PUT", values)
       if (respuesta.message === "Usuario actualizado exitosamente") {
         alertConfirm(respuesta.message);
+        handleUpdate(respuesta.user)
         onClose()
         return 
       } else {
-        alert("Exisito un error revisa la consola");
+        alert("Existe un error revisa la consola");
         return setValues({
           name: "",
           username: "",
@@ -55,10 +73,11 @@ export default function FormUser({user, submit, onClose}) {
       const respuesta = await peticionPost("http://localhost:3000/api/users/register", "POST", values)
       if (respuesta.message === "Usuario creado exitosamente") {
         alertConfirm(respuesta.message);
+        handleCreate(respuesta.user)
         onClose()
         return 
       } else {
-        alertError("Exisito un error revisa la consola")
+        alertError("Existe un error revisa la consola")
         console.log(respuesta)
         return setValues({
           name: "",

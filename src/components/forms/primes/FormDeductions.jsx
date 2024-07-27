@@ -4,14 +4,20 @@ import formValidation from "../../../validations/formValidation";
 import { alertConfirm, alertError, alertInfo } from "../../alerts/alerts";
 import { Contexto } from "../../../context/Contexto";
 
-export default function FormDeductions({ submit, current, table, onClose }) {
-  const { peticionPost } = useContext(Contexto);
+export default function FormDeductions({ submit, current, table, onClose, updates }) {
+  const {
+    peticionPost,
+    deductionsData,
+    setDeductionsData,
+    perceptionsData,
+    setPerceptionsData,
+  } = useContext(Contexto);
 
   const [values, setValues] = useState({
     type: current ? current.type : "",
     amount: current ? current.amount : "",
     date: current ? current.date : "",
-    description: current ? current.description : ""
+    description: current ? current.description : "",
   });
 
   const handleInputChange = (e) => {
@@ -20,6 +26,42 @@ export default function FormDeductions({ submit, current, table, onClose }) {
       ...values,
       [name]: value,
     });
+  };
+
+  const handleUpdate = (update) => {
+    if (table === "Percepciones") {
+      let array = perceptionsData;
+      for (let i = 0; i < array.length; i++) {
+        if (array[i]._id === update._id) {
+          array[i] = update;
+        }
+      }
+      setPerceptionsData(array);
+      updates(array)
+    } else {
+      let array = deductionsData;
+      for (let i = 0; i < array.length; i++) {
+        if (array[i]._id === update._id) {
+          array[i] = update;
+        }
+      }
+      setDeductionsData(array);
+      updates(array)
+    }
+  };
+
+  const handleCreate = (create) => {
+    if (table === "Percepciones") {
+      let array = perceptionsData;
+      array.push(create);
+      setPerceptionsData(array);
+      updates(array)
+    } else {
+      let array = deductionsData;
+      array.push(create);
+      setDeductionsData(array);
+      updates(array)
+    }
   };
 
   const validation = () => {
@@ -35,19 +77,27 @@ export default function FormDeductions({ submit, current, table, onClose }) {
     if (validate) alertInfo(validate);
 
     if (current) {
-      let respuesta = ''
-      if (table === 'Percepciones') {
+      let respuesta = "";
+      if (table === "Percepciones") {
         respuesta = await peticionPost(
           `http://localhost:3000/api/perceptions/${current._id}`,
           "PUT",
           values
         );
+        if (respuesta.error) {
+          return alertError(respuesta.error)
+        }
+        handleUpdate(respuesta.perception)
       } else {
         respuesta = await peticionPost(
           `http://localhost:3000/api/deductions/${current._id}`,
           "PUT",
           values
         );
+        if (respuesta.error) {
+          return alertError(respuesta.error)
+        }
+        handleUpdate(respuesta.deduction)
       }
       if (respuesta.message) {
         alertConfirm(respuesta.message);
@@ -57,25 +107,27 @@ export default function FormDeductions({ submit, current, table, onClose }) {
         return console.log(respuesta);
       }
     } else {
-      let respuesta = ''
-      if (table === 'Percepciones') {
+      let respuesta = "";
+      if (table === "Percepciones") {
         respuesta = await peticionPost(
           "http://localhost:3000/api/perceptions",
           "POST",
           values
         );
+        handleCreate(respuesta.perception)
       } else {
         respuesta = await peticionPost(
           "http://localhost:3000/api/deductions",
           "POST",
           values
         );
+        handleCreate(respuesta.deduction)
       }
       if (respuesta.message) {
         alertConfirm(respuesta.message);
         return onClose();
       } else {
-        alertError("Exisito un error revisa la consola");
+        alertError("Existe un error revisa la consola");
         return console.log(respuesta);
       }
     }
@@ -122,40 +174,40 @@ export default function FormDeductions({ submit, current, table, onClose }) {
         </div>
         {/* Campo Monto */}
         <div className="mb-4 w-full">
-            <label
-              htmlFor="amount"
-              className="block text-md font-medium font-roboto-serif mb-2"
-            >
-              Monto
-            </label>
-            <input
+          <label
+            htmlFor="amount"
+            className="block text-md font-medium font-roboto-serif mb-2"
+          >
+            Monto
+          </label>
+          <input
             min={0}
-              type="number"
-              id="amount"
-              name="amount"
-              value={values.amount}
-              onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
-            />
-          </div>
+            type="number"
+            id="amount"
+            name="amount"
+            value={values.amount}
+            onChange={handleInputChange}
+            className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
+          />
+        </div>
         {/* Campo Descripcion */}
         <div className="mb-4 w-full">
-            <label
-              htmlFor="description"
-              className="block text-md font-medium font-roboto-serif mb-2"
-            >
-              Descripción
-            </label>
-            <textarea
+          <label
+            htmlFor="description"
+            className="block text-md font-medium font-roboto-serif mb-2"
+          >
+            Descripción
+          </label>
+          <textarea
             min={0}
-              type="text"
-              id="description"
-              name="description"
-              value={values.description}
-              onChange={handleInputChange}
-              className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
-            />
-          </div>
+            type="text"
+            id="description"
+            name="description"
+            value={values.description}
+            onChange={handleInputChange}
+            className="shadow appearance-none border-transparent rounded-[10px] w-full py-2 px-3 text-gray-800 leading-tight bg-gray-300"
+          />
+        </div>
         <button className="rounded-xl bg-principalAzulTono5 px-12 py-2 mt-12 text-white text-xl">
           {submit}
         </button>

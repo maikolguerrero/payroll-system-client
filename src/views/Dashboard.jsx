@@ -177,11 +177,11 @@ export default function Dashboard() {
         <h1 className="text-2xl text-white font-bold mb-4 text-left">
           Dashboard
         </h1>
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-12">
+        {/*<section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-12">
           {card.map((item, index) => (
             <CardRute key={index} icon={item.icon} title={item.title} />
           ))}
-        </section>
+        </section>*/}
       </div>
 
       <section className="grid grid-cols-1 p-12">

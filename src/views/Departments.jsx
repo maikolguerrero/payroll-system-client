@@ -22,8 +22,8 @@ const Departments = () => {
     useContext(Contexto);
 
   const [departments, setDepartments] = useState(departmentsData);
-  const [filteredDepartments, setFilteredDepartments] =
-    useState(departmentsData);
+  const [filteredDepartments, setFilteredDepartments] = useState(departmentsData);
+  const [originalDepartmentsData, setOriginalDepartmentsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -36,7 +36,8 @@ const Departments = () => {
         "GET"
       );
       setDepartmentsData(respuesta);
-      setDepartments(respuesta);
+      setOriginalDepartmentsData(respuesta); // Guardar los datos originales
+      setFilteredDepartments(respuesta);
     };
 
     realizarPeticion();
@@ -45,6 +46,40 @@ const Departments = () => {
   useEffect(() => {
     setFilteredDepartments(departmentsData);
   }, [departmentsData]);
+
+  const handleSearch = (query) => {
+    if (query === null || query.trim() === "") {
+      // Restaurar los datos originales si la consulta está vacía
+      setFilteredDepartments(originalDepartmentsData);
+    } else {
+      // Filtrar los datos según la consulta en todos los campos relevantes
+      const filtered = originalDepartmentsData.filter(
+        (department) =>
+          department.name.toLowerCase().includes(query.toLowerCase()) ||
+          department.description.toLowerCase().includes(query.toLowerCase()) ||
+          department.location.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredDepartments(filtered);
+    }
+    setCurrentPage(1); // Resetea la página actual al buscar
+  };
+
+  const handleReset = () => {
+    setFilteredDepartments(originalDepartmentsData); // Restaurar los datos originales
+    setCurrentPage(1); // Resetea la página actual
+  };
+
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentItems = filteredDepartments.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredDepartments.length / ITEMS_PER_PAGE);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const openAddModal = () => {
     setCurrentDepartment(null);
@@ -85,53 +120,20 @@ const Departments = () => {
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
-      alertError("Ocurrio un Error Revisa la Consola");
+      alertError("Ocurrió un error. Revisa la consola.");
     }
     closeDeleteModal();
   };
 
-  const handleSearch = (query) => {
-    const filtered = departments.filter(
-      (department) =>
-        department.name.toLowerCase().includes(query.toLowerCase()) ||
-        department.description.toLowerCase().includes(query.toLowerCase()) ||
-        department.location.toLowerCase().includes(query.toLowerCase())
+  const updateDepartmentData = async () => {
+    const respuesta = await peticionGet(
+      "http://localhost:3000/api/departments/all",
+      "GET"
     );
-    setFilteredDepartments(filtered);
-    setCurrentPage(1);
+    setDepartmentsData(respuesta);
+    setOriginalDepartmentsData(respuesta);
+    setFilteredDepartments(respuesta);
   };
-
-  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = filteredDepartments.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-  const totalPages = Math.ceil(filteredDepartments.length / ITEMS_PER_PAGE);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  /*const handleAddEditDepartment = (departmentInfo) => {
-    if (currentDepartment) {
-      setDepartments(
-        departments.map((dept) =>
-          dept._id === currentDepartment._id ? departmentInfo : dept
-        )
-      );
-      setFilteredDepartments(
-        filteredDepartments.map((dept) =>
-          dept._id === currentDepartment._id ? departmentInfo : dept
-        )
-      );
-    } else {
-      const newDepartment = { ...departmentInfo, _id: departmentInfo._id };
-      setDepartments([...departments, newDepartment]);
-      setFilteredDepartments([...filteredDepartments, newDepartment]);
-    }
-    closeModal();
-  };*/
 
   return (
     <div className="p-4">
@@ -142,9 +144,10 @@ const Departments = () => {
         <SearchBar
           placeholder="Buscar departamentos..."
           onSearch={handleSearch}
+          onReset={handleReset} // Añadir función de resetear
         />
       </div>
-      {departments.length === 0 ? (
+      {filteredDepartments.length === 0 ? (
         <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
           No hay departamentos registrados...
         </h3>
@@ -171,7 +174,11 @@ const Departments = () => {
           currentDepartment ? "Editar departamento" : "Agregar Departamento"
         }
       >
-        <FormDepartments department={currentDepartment} onClose={closeModal} />
+        <FormDepartments
+          department={currentDepartment}
+          onClose={closeModal}
+          onSubmit={updateDepartmentData}
+        />
       </Modal>
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}

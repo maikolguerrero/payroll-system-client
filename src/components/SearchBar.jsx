@@ -1,56 +1,49 @@
 import React from 'react';
+import { FaSearch, FaTimes } from 'react-icons/fa';
 
-export default function SearchBar({ placeholder, onSearch, handleSubmit }) {
-  let handle_submit;
-  if (handleSubmit == null) {
-    handle_submit = (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const query = formData.get('search');
-      onSearch(query);
-    };
-  } else {
-    handle_submit = handleSubmit;
-  }
+export default function SearchBar({ placeholder, onSearch, onReset }) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const query = formData.get('search');
+    onSearch(query);
+  };
+
+  const handleReset = () => {
+    onReset(); // Llama a la función para restablecer la búsqueda
+  };
 
   return (
-    <form className="flex items-center" onSubmit={handle_submit}>
+    <form className="flex items-center" onSubmit={handleSubmit}>
       <label htmlFor="default-search" className="sr-only">
         Search
       </label>
       <div className="relative w-80 max-w-md">
-        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-          <svg
-            className="w-4 h-4 text-gray-500 dark:text-gray-400"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-            />
-          </svg>
-        </div>
-
         <input
           type="search"
           id="default-search"
           name="search"
-          className="block w-full p-2 ps-10 pe-16 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-principalAzulTono5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-principalAzulTono5"
+          className="block w-full p-2 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-principalAzulTono5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-principalAzulTono5"
           placeholder={placeholder}
           required
         />
-        <button
-          type="submit"
-          className="absolute inset-y-0 end-0 flex items-center px-2 text-white bg-principalAzulTono5 hover:bg-principalAzulTono3 focus:ring-4 focus:outline-none focus:ring-principalAzulTono5 font-medium rounded-r-lg text-xs py-1 dark:bg-principalAzulTono5 dark:hover:bg-principalAzulTono2 dark:focus:ring-principalAzulTono5"
-        >
-          Buscar
-        </button>
+        <div className="absolute inset-y-0 end-0 flex items-center space-x-1 pe-2">
+          <button
+            type="button"
+            onClick={handleReset}
+            className="flex items-center justify-center px-2 text-white bg-red-500 hover:bg-red-600 focus:ring-1 focus:outline-none focus:ring-red-500 font-medium rounded-l-lg text-xs py-1 dark:bg-red-600 dark:hover:bg-red-500 dark:focus:ring-red-500"
+          >
+            <FaTimes className="w-4 h-4" />
+            <span className="ms-1 hidden md:inline">Resetear</span>
+          </button>
+          <button
+            type="submit"
+            className="flex items-center justify-center px-2 text-white bg-principalAzulTono5 hover:bg-principalAzulTono3 focus:ring-1 focus:outline-none focus:ring-principalAzulTono5 font-medium rounded-r-lg text-xs py-1 dark:bg-principalAzulTono5 dark:hover:bg-principalAzulTono2 dark:focus:ring-principalAzulTono5"
+          >
+            <FaSearch className="w-4 h-4" />
+            <span className="ms-1 hidden md:inline">Buscar</span>
+          </button>
+        </div>
       </div>
     </form>
   );

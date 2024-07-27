@@ -64,9 +64,9 @@ export default function FormAttendance({ employees, current }) {
       );
       if (respuesta.message) {
         alertConfirm(respuesta.message);
-        return onClose();
+        return //onClose();
       } else {
-        alertError("Exisito un error revisa la consola");
+        alertError("Existe un error revisa la consola");
         return console.log(respuesta);
       }
     }

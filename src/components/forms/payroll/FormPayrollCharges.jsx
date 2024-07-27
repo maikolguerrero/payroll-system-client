@@ -100,6 +100,9 @@ export default function FormPayrollCharges() {
     if (respuesta.message) {
       console.log(respuesta);
       alertConfirm(respuesta.message);
+      if (respuesta.message === "Se generaron algunas nóminas con errores.") {
+        return alertError(respuesta.message);
+      }
       respuesta.payrolls.forEach(item => {
         employees.forEach(item2 => {
           if (item.employee_id === item2._id) {

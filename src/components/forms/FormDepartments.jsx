@@ -4,7 +4,7 @@ import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 import { Contexto } from "../../context/Contexto";
 
 const FormDepartments = ({ department, onClose, onSubmit }) => {
-  const { peticionPost } = useContext(Contexto)
+  const { peticionPost } = useContext(Contexto);
 
   const [values, setValues] = useState({
     name: department ? department.name : "",
@@ -34,47 +34,29 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
     if (!validateLocation)
       return alertInfo("Por favor ingrese la ubicacion del Departamento.");
 
+    let respuesta;
+
     if (department) {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         `http://localhost:3000/api/departments/${department._id}`,
         "PUT",
         values
       );
-      if (respuesta.message === "Departamento actualizado exitosamente") {
-        alertConfirm(respuesta.message);
-        /*onSubmit()*/
-        return onClose();
-      } else {
-        alert("Existio un error revisa la consola");
-        return setValues({
-          name: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-          role: "admin_nomina",
-        });
-      }
     } else {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         "http://localhost:3000/api/departments",
         "POST",
         values
       );
-      if (respuesta.message === "Departamento creado exitosamente") {
-        alertConfirm(respuesta.message);
-        /*onSubmit()*/
-        return onClose();
-      } else {
-        alertError("Exisito un error revisa la consola");
-        console.log(respuesta);
-        return setValues({
-          name: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-          role: "admin_nomina",
-        });
-      }
+    }
+
+    if (respuesta.message === "Departamento actualizado exitosamente" || respuesta.message === "Departamento creado exitosamente") {
+      alertConfirm(respuesta.message);
+      onSubmit();
+      onClose();
+    } else {
+      alertError("Ocurrió un error. Revisa la consola.");
+      console.log(respuesta);
     }
   };
 
@@ -127,7 +109,6 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
             Descripción
           </label>
           <textarea
-            type="text"
             id="description"
             name="description"
             value={values.description}

@@ -17,7 +17,7 @@ const daysOfWeek = [
 
 // Componente del formulario para la posición
 const FormPositions = ({ position, onSubmit, onClose }) => {
-  const { peticionPost } = useContext(Contexto)
+  const { peticionPost, positionsData, setPositionsData } = useContext(Contexto)
 
   const [values, setValues] = useState({
     name: "",
@@ -68,6 +68,22 @@ const FormPositions = ({ position, onSubmit, onClose }) => {
     }
   };
 
+  const handleUpdate = (update) => {
+    let array = positionsData
+    for (let i = 0; i < array.length; i++) {
+      if (array[i]._id === update._id) {
+        array[i] = update
+      }
+    }
+    setPositionsData(array)
+  }
+
+  const handleCreate = (create) => {
+    let array = positionsData
+    array.push(create);
+    setPositionsData(array)
+  }
+
   // Manejar la validación y el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,11 +106,14 @@ const FormPositions = ({ position, onSubmit, onClose }) => {
         "PUT",
         values
       );
-      if (respuesta.message === "Puesto actualizado exitosamente") {
+      if (!respuesta.error) {
+        console.log(respuesta)
         alertConfirm(respuesta.message);
         /*onSubmit()*/
+        handleUpdate(respuesta.position);
         return onClose();
       } else {
+        console.log(respuesta.error)
         alert("Existio un error revisa la consola");
         return console.log(respuesta);
       }
@@ -107,9 +126,10 @@ const FormPositions = ({ position, onSubmit, onClose }) => {
       if (respuesta.message === "Puesto creado exitosamente") {
         alertConfirm(respuesta.message);
         /*onSubmit()*/
+        handleCreate(respuesta.position);
         return onClose();
       } else {
-        alertError("Exisito un error revisa la consola");
+        alertError("Existe un error revisa la consola");
         return console.log(respuesta);
       }
     }
