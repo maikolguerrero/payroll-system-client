@@ -8,6 +8,7 @@ import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import FormDeductions from "../components/forms/primes/FormDeductions";
 import { Contexto } from "../context/Contexto";
 import { alertConfirm, alertError } from "../components/alerts/alerts";
+import { format } from "date-fns";
 
 const columns = [
   { label: "Tipo", accessor: "type" },
@@ -57,9 +58,17 @@ export default function PerceptionsDeductions() {
 
   useEffect(() => {
     if (title === "Percepciones") {
-      setFiltered(perceptionsData);
+      const mappedData = perceptionsData.map((item) => ({
+        ...item,
+        date: format(new Date(item.date), 'dd/MM/yyyy'), // Formatear la fecha prime
+      }));
+      setFiltered(mappedData);
     } else {
-      setFiltered(deductionsData);
+      const mappedData = deductionsData.map((item) => ({
+        ...item,
+        date: format(new Date(item.date), 'dd/MM/yyyy'), // Formatear la fecha prime
+      }));
+      setFiltered(mappedData);
     }
   }, [perceptionsData, deductionsData, title]);
 
@@ -88,6 +97,22 @@ export default function PerceptionsDeductions() {
     setCurrentPage(1); // Resetea la página actual al reiniciar
   };
 
+  const updates = (value) => {
+    if (title === "Percepciones") {
+      const mappedData = perceptionsData.map((item) => ({
+        ...item,
+        date: format(new Date(item.date), 'dd/MM/yyyy'), // Formatear la fecha prime
+      }));
+      setFiltered(mappedData);
+    } else {
+      const mappedData = deductionsData.map((item) => ({
+        ...item,
+        date: format(new Date(item.date), 'dd/MM/yyyy'), // Formatear la fecha prime
+      }));
+      setFiltered(mappedData);
+    }
+  };
+
   const handleChangeType = (value) => {
     setTitle(value);
     if (value === "Percepciones") {
@@ -112,7 +137,6 @@ export default function PerceptionsDeductions() {
   };
 
   const handleDelete = async () => {
-    setFiltered(filtered.filter((item) => item._id !== current._id));
     // Lógica de eliminación
     let respuesta = "";
     if (title === "Percepciones") {
@@ -120,11 +144,13 @@ export default function PerceptionsDeductions() {
         `http://localhost:3000/api/perceptions/${current._id}`,
         "DELETE"
       );
+      setPerceptionsData(filtered.filter((item) => item._id !== current._id));
     } else {
       respuesta = await peticionDelete(
         `http://localhost:3000/api/deductions/${current._id}`,
         "DELETE"
       );
+      setDeductionsData(filtered.filter((item) => item._id !== current._id));
     }
     console.log(respuesta);
     if (respuesta.message) {
@@ -198,7 +224,10 @@ export default function PerceptionsDeductions() {
             submit={current ? "Editar" : "Agregar "}
             current={current}
             table={title}
+            setPerceptionsData={setPerceptionsData}            
+            setDeductionsData={setDeductionsData}
             onClose={closeModals}
+            updates={updates}
           />
         </Modal>
 

@@ -126,6 +126,23 @@ const Employees = () => {
     setCurrentPage(pageNumber);
   };
 
+  const handleLoad = () => {
+    // Mapear los datos de empleados para incluir nombres de departamento y cargo
+    const mappedData = employeesData.map((employee) => ({
+      ...employee,
+      department_name:
+        departmentsData.find((dep) => dep._id === employee.department_id)
+          ?.name || "Desconocido",
+      position_name:
+        positionsData.find((pos) => pos._id === employee.position_id)?.name ||
+        "Desconocido",
+      hire_date: format(new Date(employee.hire_date), 'dd/MM/yyyy'), // Formatear la fecha de ingreso
+      birthdate: format(new Date(employee.birthdate), 'dd/MM/yyyy'), // Formatear la fecha de nacimiento
+    }));
+    setFilteredEmployees(mappedData);
+    setOriginalEmployeesData(mappedData); // Actualizar los datos originales cuando cambian
+  };
+
   const openAddModal = () => {
     setCurrentEmployee(null);
     setIsModalOpen(true);
@@ -154,6 +171,7 @@ const Employees = () => {
     setFilteredEmployees(
       filteredEmployees.filter((emp) => emp._id !== currentEmployee._id)
     );
+    setEmployeesData(employeesData.filter((emp) => emp._id !== currentEmployee._id))
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/employees/${currentEmployee._id}`,
@@ -166,26 +184,6 @@ const Employees = () => {
       alertError("Ocurrio un Error Revisa la Consola");
     }
     closeDeleteModal();
-  };
-
-  const handleAddEditEmployee = (employeeData) => {
-    if (currentEmployee) {
-      setEmployees(
-        employees.map((emp) =>
-          emp._id === currentEmployee._id ? employeeData : emp
-        )
-      );
-      setFilteredEmployees(
-        filteredEmployees.map((emp) =>
-          emp._id === currentEmployee._id ? employeeData : emp
-        )
-      );
-    } else {
-      const newEmployee = { ...employeeData, _id: employees.length + 1 };
-      setEmployees([...employees, newEmployee]);
-      setFilteredEmployees([...filteredEmployees, newEmployee]);
-    }
-    closeModal();
   };
 
   return (
@@ -227,8 +225,8 @@ const Employees = () => {
       >
         <FormEmployees
           employee={currentEmployee}
-          onSubmit={handleAddEditEmployee}
           onClose={closeModal}
+          updates={handleLoad}
         />
       </Modal>
       <ConfirmDeleteModal

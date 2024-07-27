@@ -15,7 +15,9 @@ import {
 } from 'react-icons/fi';
 import UserProfileDropdown from './UserProfileDropdown';
 import paths from '../config/routePaths';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
+import { Contexto } from '../context/Contexto';
+import logo from '../../public/assets/logo.png'
 
 // Simulación de datos de usuario
 const currentUser = {
@@ -28,6 +30,7 @@ const company = {
 };
 
 export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
+  const {company} = useContext(Contexto)
   const location = useLocation();
 
   useEffect(() => {
@@ -44,7 +47,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
       <div className="h-full flex flex-col justify-between px-2 bg-principalAzulTono5 text-white scrollbar-hidden">
         <div>
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold mb-4 ml-5 mt-4">Payroll System</h2>
+            <h2 className="text-lg font-bold mb-4 ml-5 mt-4">Sistema de Nómina</h2>
             <button
               className={`text-white p-2 md:hidden ${isSidebarOpen ? 'block' : 'hidden'}`}
               onClick={toggleSidebar}
@@ -108,6 +111,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 </span>
               </NavLink>
             </li>
+            {/*
             <li>
               <NavLink
                 to={paths.REPORTS_PATH}
@@ -119,6 +123,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 </span>
               </NavLink>
             </li>
+            */}
             <li>
               <NavLink
                 to={paths.PERCEPTIONS_DEDUCTIONS_PATH}
@@ -152,7 +157,9 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 </span>
               </NavLink>
             </li>
-            <li>
+            {
+              /*
+              <li>
               <NavLink
                 to={paths.SETTINGS_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
@@ -163,6 +170,8 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 </span>
               </NavLink>
             </li>
+              */
+            }
             {currentUser.isAdminPrincipal && (
               <>
                 <div className="border-t border-principalAzulTono2"></div>
@@ -190,7 +199,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                   </NavLink>
                 </li>
 
-                <li>
+                {/*<li>
                   <NavLink
                     to={paths.COMPANY_SETTINGS_PATH}
                     className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
@@ -200,7 +209,8 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                       Configuración de Empresa
                     </span>
                   </NavLink>
-                </li></>
+                </li>*/}
+                </>
 
             )}
           </ul>
@@ -210,16 +220,13 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
             <div
               className="flex items-center rounded-full px-2"
             >
-              {company.logo ? (
                 <img
-                  src={company.logo}
+                  src={logo}
                   alt="Company Logo"
                   className="w-6 h-6 rounded-full"
                 />
-              ) : (
-                <FiBriefcaseIcon className="w-6 h-6 text-white" />
-              )}
-              <span className="ml-2 text-xs font-semibold">{company.name}</span>
+        
+              <span className="ml-2 text-xs font-semibold">{company.length === 0 ? "Empresa" : company[0].name} </span>
             </div>
           </div>
           <div className="flex items-center pb-4">

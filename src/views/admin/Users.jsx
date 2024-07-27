@@ -87,6 +87,7 @@ export default function Users() {
   };
 
   const handleDelete = async () => {
+    setFilteredUsers(filteredUsers.filter((item) => item._id !== currentUser._id));
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/users/${currentUser._id}`,

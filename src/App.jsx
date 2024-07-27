@@ -22,6 +22,7 @@ import Register from "./views/Register";
 import CompanyRegister from "./views/CompanyRegister";
 import Error404 from "./views/Error404"; 
 import ProtectedRoute from './auth/ProtectedRoute';
+import Bloqued from './auth/Bloqued';
 
 
 export default function App() {
@@ -75,20 +76,20 @@ export default function App() {
         >
           <Routes>
             <Route index element={<ProtectedRoute adminComponent={Dashboard} />} />
-            <Route path={paths.DASHBOARD_PATH} element={<ProtectedRoute adminComponent={Dashboard} />} />
-            <Route path={paths.PAYROLL_PATH} element={<ProtectedRoute adminComponent={Payroll} />} />
-            <Route path={paths.EMPLOYEES_PATH} element={<ProtectedRoute adminComponent={Employees} />} />
-            <Route path={paths.DEPARTMENTS_PATH} element={<ProtectedRoute adminComponent={Departments} />} />
-            <Route path={paths.POSITIONS_PATH} element={<ProtectedRoute adminComponent={Positions} />} />
-            <Route path={paths.REPORTS_PATH} element={<ProtectedRoute adminComponent={Reports} />} />
-            <Route path={paths.PERCEPTIONS_DEDUCTIONS_PATH} element={<ProtectedRoute adminComponent={PerceptionsDeductions} />} />
-            <Route path={paths.ATTENDANCES_PATH} element={<ProtectedRoute adminComponent={Attendances} />} />
-            <Route path={paths.BANKS_PATH} element={<ProtectedRoute adminComponent={Banks} />} />
-            <Route path={paths.SETTINGS_PATH} element={<ProtectedRoute adminComponent={Settings} />} />
+            <Route path={paths.DASHBOARD_PATH} element={<ProtectedRoute adminComponent={Dashboard} userComponent={Dashboard} />} />
+            <Route path={paths.PAYROLL_PATH} element={<ProtectedRoute adminComponent={Payroll} userComponent={Payroll} />} />
+            <Route path={paths.EMPLOYEES_PATH} element={<ProtectedRoute adminComponent={Employees} userComponent={Employees} />} />
+            <Route path={paths.DEPARTMENTS_PATH} element={<ProtectedRoute adminComponent={Departments} userComponent={Departments} />} />
+            <Route path={paths.POSITIONS_PATH} element={<ProtectedRoute adminComponent={Positions} userComponent={Positions} />} />
+            <Route path={paths.REPORTS_PATH} element={<ProtectedRoute adminComponent={Reports} userComponent={Reports} />} />
+            <Route path={paths.PERCEPTIONS_DEDUCTIONS_PATH} element={<ProtectedRoute adminComponent={PerceptionsDeductions} userComponent={PerceptionsDeductions} />} />
+            <Route path={paths.ATTENDANCES_PATH} element={<ProtectedRoute adminComponent={Attendances} userComponent={Attendances} />} />
+            <Route path={paths.BANKS_PATH} element={<ProtectedRoute adminComponent={Banks} userComponent={Banks} />} />
+            <Route path={paths.SETTINGS_PATH} element={<ProtectedRoute adminComponent={Settings} userComponent={Settings} />} />
             <Route path={paths.COMPANY_SETTINGS_PATH} element={<ProtectedRoute adminComponent={CompanySettings} />} />
-            <Route path={paths.USER_PROFILE_PATH} element={<ProtectedRoute adminComponent={UserProfile} />} />
-            <Route path={paths.USERS_PATH} element={<ProtectedRoute adminComponent={Users} />} />
-            <Route path={paths.BANKS_SYSTEM_PATH} element={<ProtectedRoute adminComponent={BanksSystem} />} />
+            <Route path={paths.USER_PROFILE_PATH} element={<ProtectedRoute adminComponent={UserProfile} userComponent={UserProfile} />} />
+            <Route path={paths.USERS_PATH} element={<ProtectedRoute adminComponent={Users} userComponent={Bloqued} />} />
+            <Route path={paths.BANKS_SYSTEM_PATH} element={<ProtectedRoute adminComponent={BanksSystem} userComponent={Bloqued} />} />
 
             <Route path={paths.COMPANY_REGISTER_PATH} element={<CompanyRegister />} />
             <Route path={paths.LOGIN_PATH} element={<Login />} />

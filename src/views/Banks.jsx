@@ -70,10 +70,13 @@ export default function Banks() {
   useEffect(() => {
     const mapData = () => {
       // Mapear los datos de bancos y empleados
-      const mappedData = banksAcountsData.map(bank => ({
+      const mappedData = banksAcountsData.map((bank) => ({
         ...bank,
-        bank_name: banks.find(b => b._id === bank.bank_id)?.name || 'Desconocido',
-        employee_name: employees.find(e => e._id === bank.employee_id)?.name || 'Desconocido',
+        bank_name:
+          banks.find((b) => b._id === bank.bank_id)?.name || "Desconocido",
+        employee_name:
+          employees.find((e) => e._id === bank.employee_id)?.name ||
+          "Desconocido",
       }));
       setFilteredBanks(mappedData);
       setOriginalBanksData(mappedData); // Actualizar los datos originales cuando cambian
@@ -82,22 +85,36 @@ export default function Banks() {
     mapData();
   }, [banksAcountsData, banks, employees]);
 
+  const handleLoad = () => {
+    const mappedData = banksAcountsData.map((bank) => ({
+      ...bank,
+      bank_name:
+        banks.find((b) => b._id === bank.bank_id)?.name || "Desconocido",
+      employee_name:
+        employees.find((e) => e._id === bank.employee_id)?.name ||
+        "Desconocido",
+    }));
+    setFilteredBanks(mappedData);
+    setOriginalBanksData(mappedData); // Actualizar los datos originales cuando cambian
+  };
+
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentItems = filteredBanks.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredBanks.length / ITEMS_PER_PAGE);
 
   const handleSearch = (query) => {
-    if (query === null || query.trim() === '') {
+    if (query === null || query.trim() === "") {
       // Restaurar los datos originales si la consulta está vacía
       setFilteredBanks(originalBanksData);
     } else {
       // Filtrar los datos según la consulta en todos los campos relevantes
-      const filtered = originalBanksData.filter((bank) =>
-        bank.bank_name.toLowerCase().includes(query.toLowerCase()) ||
-        bank.account_number.toLowerCase().includes(query.toLowerCase()) ||
-        bank.account_type.toLowerCase().includes(query.toLowerCase()) ||
-        bank.employee_name.toLowerCase().includes(query.toLowerCase())
+      const filtered = originalBanksData.filter(
+        (bank) =>
+          bank.bank_name.toLowerCase().includes(query.toLowerCase()) ||
+          bank.account_number.toLowerCase().includes(query.toLowerCase()) ||
+          bank.account_type.toLowerCase().includes(query.toLowerCase()) ||
+          bank.employee_name.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredBanks(filtered);
     }
@@ -135,7 +152,12 @@ export default function Banks() {
   };
 
   const handleDelete = async () => {
-    setFilteredBanks(filteredBanks.filter((item) => item._id !== currentBank._id));
+    setFilteredBanks(
+      filteredBanks.filter((item) => item._id !== currentBank._id)
+    );
+    setBanksAcountsData(
+      filteredBanks.filter((item) => item._id !== currentBank._id)
+    );
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/banks_accounts/${currentBank._id}`,
@@ -195,6 +217,7 @@ export default function Banks() {
           <FormBank
             bank={currentBank}
             submit={currentBank ? "Editar" : "Agregar "}
+            updates={handleLoad}
             onClose={closeModals}
           />
         </Modal>

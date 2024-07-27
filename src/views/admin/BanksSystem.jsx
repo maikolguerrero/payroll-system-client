@@ -94,6 +94,7 @@ export default function BanksSystem() {
     setFilteredBanks(
       filteredBanks.filter((bank) => bank._id !== currentBank._id)
     );
+    setBanksData(filteredBanks.filter((bank) => bank._id !== currentBank._id))
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/banks/${currentBank._id}`,
       "DELETE"

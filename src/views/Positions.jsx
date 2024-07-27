@@ -134,6 +134,7 @@ const Positions = () => {
     setFilteredPositions(
       filteredPositions.filter((posit) => posit._id !== currentPosition._id)
     );
+    setPositionsData(filteredPositions.filter((posit) => posit._id !== currentPosition._id))
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/positions/${currentPosition._id}`,
