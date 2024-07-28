@@ -12,7 +12,7 @@ import { alertConfirm, alertError } from "../components/alerts/alerts";
 
 const columns = [
   { label: "CI", accessor: "ci" },
-  { label: "Nombre", accessor: "name" },
+  { label: "Nombre", accessor: "full_name" },
   { label: "Departamento", accessor: "department_name" },
   { label: "Cargo", accessor: "position_name" },
   { label: "Salario", accessor: "base_salary" },
@@ -21,6 +21,7 @@ const columns = [
   { label: "Correo", accessor: "email" },
   { label: "Dirección", accessor: "address" },
   { label: "Fecha de Nacimiento", accessor: "birthdate" },
+  { label: "Género", accessor: "gender" },
 ];
 
 const ITEMS_PER_PAGE = 10;
@@ -71,24 +72,25 @@ const Employees = () => {
     realizarPeticion();
   }, []);
 
-  useEffect(() => {
-    const mapData = () => {
-      // Mapear los datos de empleados para incluir nombres de departamento y cargo
-      const mappedData = employeesData.map((employee) => ({
-        ...employee,
-        department_name:
-          departmentsData.find((dep) => dep._id === employee.department_id)
-            ?.name || "Desconocido",
-        position_name:
-          positionsData.find((pos) => pos._id === employee.position_id)?.name ||
-          "Desconocido",
-        hire_date: format(new Date(employee.hire_date), 'dd/MM/yyyy'), // Formatear la fecha de ingreso
-        birthdate: format(new Date(employee.birthdate), 'dd/MM/yyyy'), // Formatear la fecha de nacimiento
-      }));
-      setFilteredEmployees(mappedData);
-      setOriginalEmployeesData(mappedData); // Actualizar los datos originales cuando cambian
-    };
+  const mapData = () => {
+    // Mapear los datos de empleados para incluir nombres de departamento y cargo
+    const mappedData = employeesData.map((employee) => ({
+      ...employee,
+      full_name: `${employee.name} ${employee.surnames}`, // Crear la propiedad full_name
+      department_name:
+        departmentsData.find((dep) => dep._id === employee.department_id)
+          ?.name || "Desconocido",
+      position_name:
+        positionsData.find((pos) => pos._id === employee.position_id)?.name ||
+        "Desconocido",
+      hire_date: employee.hire_date.split("T00:00:00.000Z").join(''), // Formatear la fecha de ingreso
+      birthdate: employee.birthdate.split("T00:00:00.000Z").join(''), // Formatear la fecha de nacimiento      
+    }));
+    setFilteredEmployees(mappedData);
+    setOriginalEmployeesData(mappedData); // Actualizar los datos originales cuando cambian
+  };
 
+  useEffect(() => {
     mapData();
   }, [employeesData, departmentsData, positionsData]);
 
@@ -100,7 +102,7 @@ const Employees = () => {
       // Filtrar los datos según la consulta en todos los campos relevantes
       const filtered = originalEmployeesData.filter((employee) =>
         employee.ci.toLowerCase().includes(query.toLowerCase()) ||
-        employee.name.toLowerCase().includes(query.toLowerCase()) ||
+        employee.full_name.toLowerCase().includes(query.toLowerCase()) ||
         employee.department_name.toLowerCase().includes(query.toLowerCase()) ||
         employee.position_name.toLowerCase().includes(query.toLowerCase())
       );
@@ -124,23 +126,6 @@ const Employees = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-  };
-
-  const handleLoad = () => {
-    // Mapear los datos de empleados para incluir nombres de departamento y cargo
-    const mappedData = employeesData.map((employee) => ({
-      ...employee,
-      department_name:
-        departmentsData.find((dep) => dep._id === employee.department_id)
-          ?.name || "Desconocido",
-      position_name:
-        positionsData.find((pos) => pos._id === employee.position_id)?.name ||
-        "Desconocido",
-      hire_date: format(new Date(employee.hire_date), 'dd/MM/yyyy'), // Formatear la fecha de ingreso
-      birthdate: format(new Date(employee.birthdate), 'dd/MM/yyyy'), // Formatear la fecha de nacimiento
-    }));
-    setFilteredEmployees(mappedData);
-    setOriginalEmployeesData(mappedData); // Actualizar los datos originales cuando cambian
   };
 
   const openAddModal = () => {
@@ -171,19 +156,64 @@ const Employees = () => {
     setFilteredEmployees(
       filteredEmployees.filter((emp) => emp._id !== currentEmployee._id)
     );
-    setEmployeesData(employeesData.filter((emp) => emp._id !== currentEmployee._id))
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/employees/${currentEmployee._id}`,
       "DELETE"
     );
-    console.log(respuesta);
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
-      alertError("Ocurrio un Error Revisa la Consola");
+      alertError(respuesta.error);
     }
     closeDeleteModal();
+  };
+
+  const handleAddEditEmployee = (employeeData) => {
+    // if (currentEmployee) {
+    //   setEmployees(
+    //     employees.map((emp) =>
+    //       emp._id === currentEmployee._id ? employeeData : emp
+    //     )
+    //   );
+    //   setFilteredEmployees(
+    //     filteredEmployees.map((emp) =>
+    //       emp._id === currentEmployee._id ? employeeData : emp
+    //     )
+    //   );
+    // } else {
+    //   const newEmployee = { ...employeeData, _id: employees.length + 1 };
+    //   setEmployees([...employees, newEmployee]);
+    //   setFilteredEmployees([...filteredEmployees, newEmployee]);
+    // }
+
+    const realizarPeticion = async () => {
+      const respuesta = await peticionGet(
+        "http://localhost:3000/api/employees/all",
+        "GET"
+      );
+      setEmployeesData(respuesta);
+      setOriginalEmployeesData(respuesta); // Guardar los datos originales
+      setFilteredEmployees(respuesta);
+
+      const respuesta2 = await peticionGet(
+        "http://localhost:3000/api/departments/all",
+        "GET"
+      );
+      setDepartmentsData(respuesta2);
+
+      const respuesta3 = await peticionGet(
+        "http://localhost:3000/api/positions/all",
+        "GET"
+      );
+      setPositionsData(respuesta3);
+    };
+
+    realizarPeticion();
+
+    mapData();
+
+    closeModal();
   };
 
   return (
@@ -225,8 +255,8 @@ const Employees = () => {
       >
         <FormEmployees
           employee={currentEmployee}
+          onSubmit={handleAddEditEmployee}
           onClose={closeModal}
-          updates={handleLoad}
         />
       </Modal>
       <ConfirmDeleteModal

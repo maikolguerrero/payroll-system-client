@@ -3,8 +3,8 @@ import formValidation from "../../validations/formValidation";
 import { Contexto } from "../../context/Contexto";
 import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 
-export default function FormUser({user, submit, onClose}) {
-  const { peticionPost, users, setUsers } = useContext(Contexto)
+export default function FormUser({ user, submit, onClose, onSubmit }) {
+  const { peticionPost } = useContext(Contexto)
 
   const [values, setValues] = useState({
     name: user ? user.name : '',
@@ -13,23 +13,6 @@ export default function FormUser({user, submit, onClose}) {
     confirmPassword: '',
     role: user ? user.role : "admin_nomina"
   });
-
-  const handleUpdate = (update) => {
-    let array = users
-    for (let i = 0; i < array.length; i++) {
-      if (array[i]._id === update._id) {
-        array[i] = update
-      }
-    }
-    console.log(array)
-    setUsers(array)
-  }
-
-  const handleCreate = (create) => {
-    let array = users
-    array.push(create);
-    setUsers(array)
-  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,51 +25,42 @@ export default function FormUser({user, submit, onClose}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validateName = formValidation.validateText(values.name);
-    const validateUsername = formValidation.validateText(values.username);
+    const validateUsername = formValidation.validateUsername(values.username);
+
     const validatePassword = formValidation.validatePassword(values.password);
-    const validatePasswords = formValidation.validatePasswords(values.password, values.confirmPassword)
+    const validatePasswords = formValidation.validatePasswords(values.password, values.confirmPassword);
 
     // Asignar mensajes si se llena mal el campo
     if (!validateName) return alertInfo('Por favor ingrese su nombre.')
-    if (!validateUsername) return alertInfo('Por favor ingrese un Usuario.')
-    if (!validatePassword) return alertInfo('incluir una mayúscula y un número. 6 caracteres min.')
-    if (!validatePasswords) return alertInfo('Las contraseñas no coinciden.')
+    if (!validateUsername) return alertInfo('El nombre de usuario no es válido. Solo puede contener letras, números, guiones bajos, puntos y guiones, y no puede contener espacios.')
+
+    if (!user) {
+      if (!validatePassword) return alertInfo('La contraseña debe tener entre 8 y 128 caracteres, e incluir al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, y no puede contener espacios.')
+      if (!validatePasswords) return alertInfo('Las contraseñas no coinciden.')
+    }
+
+    let respuesta;
 
     if (user) {
-      const respuesta = await peticionPost(`http://localhost:3000/api/users/${user._id}`, "PUT", values)
-      if (respuesta.message === "Usuario actualizado exitosamente") {
-        alertConfirm(respuesta.message);
-        handleUpdate(respuesta.user)
-        onClose()
-        return 
-      } else {
-        alert("Existe un error revisa la consola");
-        return setValues({
-          name: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-          role: "admin_nomina"
-        })
-      }
+      respuesta = await peticionPost(
+        `http://localhost:3000/api/users/${user._id}`,
+        "PUT",
+        values
+      );
     } else {
-      const respuesta = await peticionPost("http://localhost:3000/api/users/register", "POST", values)
-      if (respuesta.message === "Usuario creado exitosamente") {
-        alertConfirm(respuesta.message);
-        handleCreate(respuesta.user)
-        onClose()
-        return 
-      } else {
-        alertError("Existe un error revisa la consola")
-        console.log(respuesta)
-        return setValues({
-          name: "",
-          username: "",
-          password: "",
-          confirmPassword: "",
-          role: "admin_nomina"
-        })
-      }
+      respuesta = await peticionPost(
+        "http://localhost:3000/api/users/register",
+        "POST",
+        values
+      );
+    }
+
+    if (respuesta.message) {
+      alertConfirm(respuesta.message);
+      onSubmit();
+      onClose();
+    } else {
+      alertError(respuesta.error);
     }
   };
 

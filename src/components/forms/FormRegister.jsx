@@ -43,14 +43,7 @@ export default function FormRegister() {
       alertBasic(respuesta.message);
       return navigate(paths.LOGIN_PATH);
     } else {
-      alertError("Existe un error revisa la consola");
-      return setValues({
-        name: "",
-        username: "",
-        password: "",
-        confirmPassword: "",
-        role: "admin_principal"
-      })
+      alertError(respuesta.error);
     }
   };
 

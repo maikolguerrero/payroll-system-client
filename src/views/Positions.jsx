@@ -21,7 +21,7 @@ const columns = [
 const ITEMS_PER_PAGE = 10;
 
 const abreviarDias = (dias) => {
-  const mapaDias = {
+  const mapDias = {
     Lunes: "Lun",
     Martes: "Mar",
     Miércoles: "Mié",
@@ -30,7 +30,25 @@ const abreviarDias = (dias) => {
     Sábado: "Sáb",
     Domingo: "Dom",
   };
-  return dias.map((dia) => mapaDias[dia] || dia).join(", ");
+  return dias.map((dia) => mapDias[dia] || dia).join(", ");
+};
+
+// Array con el orden correcto de los días de la semana
+const daysOfWeekOrder = [
+  "Lunes",
+  "Martes",
+  "Miércoles",
+  "Jueves",
+  "Viernes",
+  "Sábado",
+  "Domingo"
+];
+
+// Función para ordenar un array de días de la semana
+const sortDaysOfWeek = (daysArray) => {
+  return daysArray.sort((a, b) => {
+    return daysOfWeekOrder.indexOf(a) - daysOfWeekOrder.indexOf(b);
+  });
 };
 
 const Positions = () => {
@@ -96,7 +114,7 @@ const Positions = () => {
     .slice(indexOfFirstItem, indexOfLastItem)
     .map((position) => ({
       ...position,
-      work_days: abreviarDias(position.work_days),
+      work_days: abreviarDias(sortDaysOfWeek(position.work_days)),
     }));
   const totalPages = Math.ceil(filteredPositions.length / ITEMS_PER_PAGE);
 
@@ -134,53 +152,27 @@ const Positions = () => {
     setFilteredPositions(
       filteredPositions.filter((posit) => posit._id !== currentPosition._id)
     );
-    setPositionsData(filteredPositions.filter((posit) => posit._id !== currentPosition._id))
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/positions/${currentPosition._id}`,
       "DELETE"
     );
-    console.log(respuesta);
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
-      alertError("Ocurrió un error. Revisa la consola.");
+      alertError(respuesta.message);
     }
     closeDeleteModal();
   };
 
-  const handleAddEditPosition = (positionData) => {
-    const formattedPositionData = {
-      ...positionData,
-      work_days: Array.isArray(positionData.work_days)
-        ? positionData.work_days
-        : [],
-    };
-
-    if (currentPosition) {
-      setPositions(
-        positions.map((pos) =>
-          pos._id === currentPosition._id
-            ? { ...formattedPositionData, _id: currentPosition._id }
-            : pos
-        )
-      );
-      setFilteredPositions(
-        filteredPositions.map((pos) =>
-          pos._id === currentPosition._id
-            ? { ...formattedPositionData, _id: currentPosition._id }
-            : pos
-        )
-      );
-    } else {
-      const newPosition = {
-        ...formattedPositionData,
-        _id: positions.length + 1, // Simulando un ID único; ajusta según tu lógica
-      };
-      setPositions([...positions, newPosition]);
-      setFilteredPositions([...filteredPositions, newPosition]);
-    }
-    closeModal();
+  const updatePositionData = async () => {
+    const respuesta = await peticionGet(
+      "http://localhost:3000/api/positions/all",
+      "GET"
+    );
+    setPositionsData(respuesta);
+    setOriginalPositionsData(respuesta);
+    setFilteredPositions(respuesta);
   };
 
   return (
@@ -220,7 +212,7 @@ const Positions = () => {
       >
         <FormPositions
           position={currentPosition}
-          onSubmit={handleAddEditPosition}
+          onSubmit={updatePositionData}
           onClose={closeModal}
         />
       </Modal>

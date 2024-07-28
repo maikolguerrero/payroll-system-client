@@ -3,14 +3,8 @@ import { Contexto } from "../../context/Contexto";
 import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 import formValidation from "../../validations/formValidation";
 
-export default function FormBank({ submit, bank, onClose, updates }) {
-  const {
-    employeesData,
-    banksData,
-    peticionPost,
-    banksAcountsData,
-    setBanksAcountsData,
-  } = useContext(Contexto);
+export default function FormBank({ submit, bank, onClose, onSubmit }) {
+  const { employeesData, banksData, peticionPost } = useContext(Contexto);
 
   const [values, setValues] = useState({
     bank_id: bank ? bank.bank_id : "",
@@ -27,24 +21,6 @@ export default function FormBank({ submit, bank, onClose, updates }) {
     });
   };
 
-  const handleUpdate = (update) => {
-    let array = banksAcountsData;
-    for (let i = 0; i < array.length; i++) {
-      if (array[i]._id === update._id) {
-        array[i] = update;
-      }
-    }
-    setBanksAcountsData(array);
-    updates(array);
-  };
-
-  const handleCreate = (create) => {
-    let array = banksAcountsData;
-    array.push(create);
-    setBanksAcountsData(array);
-    updates(array);
-  };
-
   const validation = () => {
     for (let key in values) {
       let error = formValidation.validateText(values[key].toString());
@@ -57,34 +33,28 @@ export default function FormBank({ submit, bank, onClose, updates }) {
     const validate = validation();
     if (validate) return alertInfo(validate);
 
+    let respuesta;
+
     if (bank) {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         `http://localhost:3000/api/banks_accounts/${bank._id}`,
         "PUT",
         values
       );
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        handleUpdate(respuesta.bankAccount);
-        return onClose();
-      } else {
-        alert("Existio un error revisa la consola");
-        return console.log(respuesta);
-      }
     } else {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         "http://localhost:3000/api/banks_accounts",
         "POST",
         values
       );
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        handleCreate(respuesta.bankAccount);
-        return onClose();
-      } else {
-        alertError("Existe un error revisa la consola");
-        return console.log(respuesta);
-      }
+    }
+
+    if (respuesta.message) {
+      alertConfirm(respuesta.message);
+      onSubmit();
+      onClose();
+    } else {
+      alertError(respuesta.error);
     }
   };
 

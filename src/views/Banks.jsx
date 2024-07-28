@@ -70,13 +70,10 @@ export default function Banks() {
   useEffect(() => {
     const mapData = () => {
       // Mapear los datos de bancos y empleados
-      const mappedData = banksAcountsData.map((bank) => ({
+      const mappedData = banksAcountsData.map(bank => ({
         ...bank,
-        bank_name:
-          banks.find((b) => b._id === bank.bank_id)?.name || "Desconocido",
-        employee_name:
-          employees.find((e) => e._id === bank.employee_id)?.name ||
-          "Desconocido",
+        bank_name: banks.find(b => b._id === bank.bank_id)?.name || 'Desconocido',
+        employee_name: employees.find(e => e._id === bank.employee_id)?.name || 'Desconocido',
       }));
       setFilteredBanks(mappedData);
       setOriginalBanksData(mappedData); // Actualizar los datos originales cuando cambian
@@ -85,36 +82,22 @@ export default function Banks() {
     mapData();
   }, [banksAcountsData, banks, employees]);
 
-  const handleLoad = () => {
-    const mappedData = banksAcountsData.map((bank) => ({
-      ...bank,
-      bank_name:
-        banks.find((b) => b._id === bank.bank_id)?.name || "Desconocido",
-      employee_name:
-        employees.find((e) => e._id === bank.employee_id)?.name ||
-        "Desconocido",
-    }));
-    setFilteredBanks(mappedData);
-    setOriginalBanksData(mappedData); // Actualizar los datos originales cuando cambian
-  };
-
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentItems = filteredBanks.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredBanks.length / ITEMS_PER_PAGE);
 
   const handleSearch = (query) => {
-    if (query === null || query.trim() === "") {
+    if (query === null || query.trim() === '') {
       // Restaurar los datos originales si la consulta está vacía
       setFilteredBanks(originalBanksData);
     } else {
       // Filtrar los datos según la consulta en todos los campos relevantes
-      const filtered = originalBanksData.filter(
-        (bank) =>
-          bank.bank_name.toLowerCase().includes(query.toLowerCase()) ||
-          bank.account_number.toLowerCase().includes(query.toLowerCase()) ||
-          bank.account_type.toLowerCase().includes(query.toLowerCase()) ||
-          bank.employee_name.toLowerCase().includes(query.toLowerCase())
+      const filtered = originalBanksData.filter((bank) =>
+        bank.bank_name.toLowerCase().includes(query.toLowerCase()) ||
+        bank.account_number.toLowerCase().includes(query.toLowerCase()) ||
+        bank.account_type.toLowerCase().includes(query.toLowerCase()) ||
+        bank.employee_name.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredBanks(filtered);
     }
@@ -146,39 +129,65 @@ export default function Banks() {
     setIsDeleteModalOpen(false);
   };
 
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
   const openDeleteModal = (user) => {
     setCurrentBank(user);
     setIsDeleteModalOpen(true);
   };
 
   const handleDelete = async () => {
-    setFilteredBanks(
-      filteredBanks.filter((item) => item._id !== currentBank._id)
-    );
     setBanksAcountsData(
-      filteredBanks.filter((item) => item._id !== currentBank._id)
+      banksAcountsData.filter((bank) => bank._id !== currentBank._id)
+    );
+    setFilteredBanks(
+      filteredBanks.filter((bank) => bank._id !== currentBank._id)
     );
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/banks_accounts/${currentBank._id}`,
       "DELETE"
     );
-    console.log(respuesta);
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
-      alertError("Ocurrio un Error Revisa la Consola");
+      alertError(respuesta.error);
     }
-    closeModals();
+    closeDeleteModal();
+  };
+
+  const updateBankData = async () => {
+    const respuesta = await peticionGet(
+      "http://localhost:3000/api/banks_accounts/all",
+      "GET"
+    );
+    setOriginalBanksData(respuesta);
+    setFilteredBanks(respuesta);
+
+    const mapData = () => {
+      // Mapear los datos de bancos y empleados
+      const mappedData = respuesta.map(bank => ({
+        ...bank,
+        bank_name: banks.find(b => b._id === bank.bank_id)?.name || 'Desconocido',
+        employee_name: employees.find(e => e._id === bank.employee_id)?.name || 'Desconocido',
+      }));
+      setBanksAcountsData(mappedData);
+      setFilteredBanks(mappedData);
+      setOriginalBanksData(mappedData);
+    };
+
+    mapData();
   };
 
   return (
     <>
       <div className="p-4">
-        <h1 className="text-2xl text-white font-bold mb-4 text-left">Bancos</h1>
+        <h1 className="text-2xl text-white font-bold mb-4 text-left">Cuentas Bancarias</h1>
         <div className="grid grid-cols-2 gap-4">
           <SearchBar
-            placeholder="Buscar bancos..."
+            placeholder="Buscar cuentas..."
             onSearch={handleSearch}
             onReset={handleReset} // Pasar la función de resetear
           />
@@ -191,7 +200,7 @@ export default function Banks() {
         </div>
         {filteredBanks.length === 0 ? (
           <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
-            No hay bancos de usuarios registrados...
+            No hay cuentas bancarias registradas...
           </h3>
         ) : (
           <>
@@ -212,13 +221,13 @@ export default function Banks() {
         <Modal
           isOpen={isModalOpen}
           onClose={closeModals}
-          title={currentBank ? "Editar Banco" : "Registrar nuevo banco"}
+          title={currentBank ? "Editar cuenta bancaria" : "Registrar nueva cuenta bancaria"}
         >
           <FormBank
             bank={currentBank}
             submit={currentBank ? "Editar" : "Agregar "}
-            updates={handleLoad}
             onClose={closeModals}
+            onSubmit={updateBankData}
           />
         </Modal>
         <Modal isOpen={isModalOpen2} onClose={closeModals} title={"Crear TXT"}>
@@ -228,8 +237,8 @@ export default function Banks() {
           isOpen={isDeleteModalOpen}
           onClose={closeModals}
           onDelete={handleDelete}
-          article="el"
-          entityName="banco"
+          article="la"
+          entityName="cuenta bancaria"
         />
       </div>
     </>

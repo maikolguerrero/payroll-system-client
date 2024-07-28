@@ -11,32 +11,25 @@ import {
   FiLayers,
   FiFileText,
   FiBriefcase as FiBriefcaseIcon,
-  FiX
+  FiX,
+  FiCreditCard
 } from 'react-icons/fi';
 import UserProfileDropdown from './UserProfileDropdown';
 import paths from '../config/routePaths';
 import { useContext, useEffect } from 'react';
 import { Contexto } from '../context/Contexto';
-import logo from '../../public/assets/logo.png'
-
-// Simulación de datos de usuario
-const currentUser = {
-  isAdminPrincipal: true // Cambia esto a `false` para probar el comportamiento
-};
-
-const company = {
-  logo: null,
-  name: 'Nombre de la Empresa',
-};
 
 export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
-  const {company} = useContext(Contexto)
+  const { company, user } = useContext(Contexto)
   const location = useLocation();
+
 
   useEffect(() => {
     if (isSidebarOpen) {
       toggleSidebar();
     }
+
+
   }, [location.pathname]);
 
   return (
@@ -75,6 +68,18 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 <FiDollarSign className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
                 <span className="flex-1 ml-2 whitespace-nowrap">
                   Nóminas
+                </span>
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                to={paths.HISTORY_PATH}
+                className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
+              >
+                <FiFileText className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+                <span className="flex-1 ml-2 whitespace-nowrap">
+                  Historial
                 </span>
               </NavLink>
             </li>
@@ -151,6 +156,18 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                 to={paths.BANKS_PATH}
                 className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
               >
+                <FiDollarSign className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
+
+                <span className="flex-1 ml-2 whitespace-nowrap">
+                  Cuentas Bancarias
+                </span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to={paths.BANKS_SYSTEM_PATH}
+                className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
+              >
                 <FiBarChart2 className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
                 <span className="flex-1 ml-2 whitespace-nowrap">
                   Bancos
@@ -172,7 +189,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
             </li>
               */
             }
-            {currentUser.isAdminPrincipal && (
+            {user?.role == "admin_principal" ? (
               <>
                 <div className="border-t border-principalAzulTono2"></div>
                 <li>
@@ -183,18 +200,6 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                     <FiUsers className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
                     <span className="flex-1 ml-2 whitespace-nowrap">
                       Usuarios
-                    </span>
-                  </NavLink>
-                </li>
-
-                <li>
-                  <NavLink
-                    to={paths.BANKS_SYSTEM_PATH}
-                    className="flex items-center p-2 text-white rounded-lg hover:bg-principalAzulTono2 group"
-                  >
-                  <FiBarChart2 className="flex-shrink-0 w-4 h-4 text-white transition duration-75 group-hover:text-white" />
-                    <span className="flex-1 ml-2 whitespace-nowrap">
-                      Bancos del sistema
                     </span>
                   </NavLink>
                 </li>
@@ -210,23 +215,24 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
                     </span>
                   </NavLink>
                 </li>*/}
-                </>
+              </>
 
-            )}
+            ) : (<></>)}
           </ul>
         </div>
         <div className="border-t border-principalAzulTono2 mt-2 pt-2">
           <div className="flex items-center mb-2">
-            <div
-              className="flex items-center rounded-full px-2"
-            >
+            <div className="flex items-center rounded-full">
+              {company?.logo ? (
                 <img
-                  src={logo}
-                  alt="Company Logo"
-                  className="w-6 h-6 rounded-full"
+                  src={`http://localhost:3000/api/uploads/${company.logo}`}
+                  alt="Logo"
+                  className="w-10 h-10 rounded-full"
                 />
-        
-              <span className="ml-2 text-xs font-semibold">{company.length === 0 ? "Empresa" : company[0].name} </span>
+              ) : (
+                <FiBriefcaseIcon className="w-6 h-6 text-white" />
+              )}
+              <span className="ml-2 text-xs font-semibold">{company?.length === 0 ? "Empresa" : company?.name} </span>
             </div>
           </div>
           <div className="flex items-center pb-4">

@@ -4,21 +4,22 @@ import formValidation from "../../../validations/formValidation";
 import { alertConfirm, alertError, alertInfo } from "../../alerts/alerts";
 import { Contexto } from "../../../context/Contexto";
 
-export default function FormDeductions({ submit, current, table, onClose, updates }) {
-  const {
-    peticionPost,
-    deductionsData,
-    setDeductionsData,
-    perceptionsData,
-    setPerceptionsData,
-  } = useContext(Contexto);
+export default function FormDeductions({ submit, current, table, onClose, onSubmit }) {
+  const { peticionPost } = useContext(Contexto);
 
   const [values, setValues] = useState({
     type: current ? current.type : "",
     amount: current ? current.amount : "",
-    date: current ? current.date : "",
-    description: current ? current.description : "",
+    date: current ? current.date.split("T00:00:00.000Z").join('') : "",
+    description: current ? current.description : ""
   });
+
+  // useEffect(() => {
+  //   setValues({
+  //     ...values,
+  //     "date": values.date.split("T00:00:00.000Z").join('')
+  //   });
+  // }, [current]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,46 +29,60 @@ export default function FormDeductions({ submit, current, table, onClose, update
     });
   };
 
-  const handleUpdate = (update) => {
-    if (table === "Percepciones") {
-      let array = perceptionsData;
-      for (let i = 0; i < array.length; i++) {
-        if (array[i]._id === update._id) {
-          array[i] = update;
-        }
-      }
-      setPerceptionsData(array);
-      updates(array)
-    } else {
-      let array = deductionsData;
-      for (let i = 0; i < array.length; i++) {
-        if (array[i]._id === update._id) {
-          array[i] = update;
-        }
-      }
-      setDeductionsData(array);
-      updates(array)
-    }
-  };
-
-  const handleCreate = (create) => {
-    if (table === "Percepciones") {
-      let array = perceptionsData;
-      array.push(create);
-      setPerceptionsData(array);
-      updates(array)
-    } else {
-      let array = deductionsData;
-      array.push(create);
-      setDeductionsData(array);
-      updates(array)
-    }
-  };
-
   const validation = () => {
     for (let key in values) {
       let error = formValidation.validateText(values[key].toString());
       if (!error) return "Completa todos los datos";
+    }
+  };
+
+  const handleSubmit2 = async (e) => {
+    e.preventDefault();
+    const validate = validation();
+    if (validate) alertInfo(validate);
+
+    if (current) {
+      let respuesta = ''
+      if (table === 'Percepciones') {
+        respuesta = await peticionPost(
+          `http://localhost:3000/api/perceptions/${current._id}`,
+          "PUT",
+          values
+        );
+      } else {
+        respuesta = await peticionPost(
+          `http://localhost:3000/api/deductions/${current._id}`,
+          "PUT",
+          values
+        );
+      }
+      if (respuesta.message) {
+        alertConfirm(respuesta.message);
+        return onClose();
+      } else {
+        return alert(respuesta.error);
+      }
+    } else {
+      let respuesta = ''
+      if (table === 'Percepciones') {
+        respuesta = await peticionPost(
+          "http://localhost:3000/api/perceptions",
+          "POST",
+          values
+        );
+      } else {
+        respuesta = await peticionPost(
+          "http://localhost:3000/api/deductions",
+          "POST",
+          values
+        );
+      }
+      if (respuesta.message) {
+        alertConfirm(respuesta.message);
+        return onClose();
+      } else {
+        return alertError(respuesta.error);
+      }
     }
   };
 
@@ -76,60 +91,44 @@ export default function FormDeductions({ submit, current, table, onClose, update
     const validate = validation();
     if (validate) alertInfo(validate);
 
+    let respuesta;
+
     if (current) {
-      let respuesta = "";
-      if (table === "Percepciones") {
+      if (table === 'Percepciones') {
         respuesta = await peticionPost(
           `http://localhost:3000/api/perceptions/${current._id}`,
           "PUT",
           values
         );
-        if (respuesta.error) {
-          return alertError(respuesta.error)
-        }
-        handleUpdate(respuesta.perception)
       } else {
         respuesta = await peticionPost(
           `http://localhost:3000/api/deductions/${current._id}`,
           "PUT",
           values
         );
-        if (respuesta.error) {
-          return alertError(respuesta.error)
-        }
-        handleUpdate(respuesta.deduction)
-      }
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        return onClose();
-      } else {
-        alert("Existio un error revisa la consola");
-        return console.log(respuesta);
       }
     } else {
-      let respuesta = "";
-      if (table === "Percepciones") {
+      if (table === 'Percepciones') {
         respuesta = await peticionPost(
           "http://localhost:3000/api/perceptions",
           "POST",
           values
         );
-        handleCreate(respuesta.perception)
       } else {
         respuesta = await peticionPost(
           "http://localhost:3000/api/deductions",
           "POST",
           values
         );
-        handleCreate(respuesta.deduction)
       }
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        return onClose();
-      } else {
-        alertError("Existe un error revisa la consola");
-        return console.log(respuesta);
-      }
+    }
+
+    if (respuesta.message) {
+      alertConfirm(respuesta.message);
+      onSubmit();
+      onClose();
+    } else {
+      alertError(respuesta.error);
     }
   };
 

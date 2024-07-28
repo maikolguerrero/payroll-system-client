@@ -8,7 +8,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDF from "../../PDF";
 
 export default function FormPayrollCharges() {
-  const { peticionGet, peticionPost } = useContext(Contexto);
+  const { peticionGet, peticionPost, company } = useContext(Contexto);
 
   const [values, setValues] = useState({
     position: "",
@@ -98,7 +98,6 @@ export default function FormPayrollCharges() {
       values
     );
     if (respuesta.message) {
-      console.log(respuesta);
       alertConfirm(respuesta.message);
       if (respuesta.message === "Se generaron algunas nóminas con errores.") {
         return alertError(respuesta.message);
@@ -114,8 +113,7 @@ export default function FormPayrollCharges() {
       setInfo(respuesta.payrolls);
       return;
     } else {
-      alertError("Existio un error revisa la consola");
-      return console.log(respuesta);
+      return alertError(respuesta.error);
     }
   };
 
@@ -287,7 +285,7 @@ export default function FormPayrollCharges() {
         <></>
       ) : (
         <PDFDownloadLink
-          document={<PDF data={info} />}
+          document={<PDF data={info} company={company} />}
           fileName="ReporteNominaEmpleado.pdf"
         >
           {({ loading, url, error, blob }) =>

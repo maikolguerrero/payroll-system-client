@@ -8,7 +8,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDF from "../../PDF";
 
 export default function FormEmployeesPayroll() {
-  const { peticionGet, peticionPost } = useContext(Contexto);
+  const { peticionGet, peticionPost, company } = useContext(Contexto);
 
   const [values, setValues] = useState({
     period: "",
@@ -91,7 +91,6 @@ export default function FormEmployeesPayroll() {
       values
     );
     if (respuesta.message) {
-      console.log(respuesta);
       alertConfirm(respuesta.message);
       
       if (respuesta.message === "Se generaron algunas nóminas con errores.") {
@@ -102,14 +101,15 @@ export default function FormEmployeesPayroll() {
           if (item.employee_id === item2._id) {
             item.name = item2.name
             item.surnames = item2.surnames
+            item.ci = item2.ci
           }
         });
       });
       setInfo(respuesta.payrolls);
       return;
     } else {
-      alertError("Existio un error revisa la consola");
-      return console.log(respuesta);
+      alertError(respuesta.error);
+      return;
     }
   };
 
@@ -257,7 +257,7 @@ export default function FormEmployeesPayroll() {
         <></>
       ) : (
         
-      <PDFDownloadLink document={<PDF data={info} empleados={employees}/>} fileName="ReporteNominaEmpleado.pdf">
+      <PDFDownloadLink document={<PDF data={info} empleados={employees} company={company} />} fileName="ReporteNominaEmpleado.pdf">
         {({ loading, url, error, blob }) =>
           loading ? (
             <button className="text-center w-full text-xl">Loading Document ...</button>

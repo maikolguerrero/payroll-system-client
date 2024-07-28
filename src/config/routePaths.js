@@ -15,7 +15,8 @@ const paths = {
   COMPANY_REGISTER_PATH: "/company-register",
   LOGIN_PATH: "/login",
   REGISTER_PATH: "/register",
-  BANKS_SYSTEM_PATH: "/banks-system"
+  BANKS_SYSTEM_PATH: "/banks-system",
+  HISTORY_PATH: "/history"
 };
 
 export default paths;

@@ -26,7 +26,7 @@ const columns = [
 const ITEMS_PER_PAGE = 10;
 
 export default function Attendances() {
-  const { peticionGet, employeesData, setEmployeesData, peticionDelete } = useContext(Contexto);
+  const { peticionGet, employeesData, setEmployeesData, peticionDelete, departmentsData, positionsData } = useContext(Contexto);
 
   const [filteredAttendances, setFilteredAttendances] = useState([]);
   const [originalAttendances, setOriginalAttendances] = useState([]); // Datos originales
@@ -54,12 +54,16 @@ export default function Attendances() {
 
         const attendancesWithDetails = attendancesResponse.map(attendance => {
           const employee = employeesResponse.find(emp => emp._id === attendance.employee_id);
+          const department = departmentsData.find(dept => dept._id === employee?.department_id)?.name || 'Desconocido';
+          const position = positionsData.find(pos => pos._id === employee?.position_id)?.name || 'Desconocido';
+
           return {
             ...attendance,
+            "date": attendance.date.split("T00:00:00.000Z").join(''),
             ci: employee?.ci || 'Desconocido',
             employee_name: employee ? `${employee.name} ${employee.surnames}` : 'Desconocido',
-            department: employee?.department || 'Desconocido',
-            position: employee?.position || 'Desconocido',
+            department,
+            position,
           };
         });
 
@@ -131,9 +135,14 @@ export default function Attendances() {
     setIsModalOpen(false);
     setIsDeleteModalOpen(false);
   };
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    setDate(selectedDate);
+  };
 
   const handleDelete = async () => {
     setFilteredAttendances(filteredAttendances.filter((item) => item._id !== currentAttendance._id));
+    setOriginalAttendances(filteredAttendances.filter((item) => item._id !== currentAttendance._id));
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/attendances/${currentAttendance._id}`,
       "DELETE"
@@ -141,19 +150,39 @@ export default function Attendances() {
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
-      alertError("Ocurrio un Error Revisa la Consola");
+      alertError(respuesta.error);
     }
     closeModals();
   };
 
-  const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
-    setDate(selectedDate);
-  };
+  const updateAttendances = async () => {
+    const fetchAttendancesForDate = async () => {
+      if (date) {
+        const attendancesResponse = await peticionGet(`http://localhost:3000/api/attendances/date/${date}`, "GET");
+        const employeesResponse = await peticionGet("http://localhost:3000/api/employees/all", "GET");
+        setEmployeesData(employeesResponse);
 
-  const handleAddAttendance = (attendanceData) => {
-    console.log(attendanceData);
-    closeModals();
+        const attendancesWithDetails = attendancesResponse.map(attendance => {
+          const employee = employeesResponse.find(emp => emp._id === attendance.employee_id);
+          const department = departmentsData.find(dept => dept._id === employee?.department_id)?.name || 'Desconocido';
+          const position = positionsData.find(pos => pos._id === employee?.position_id)?.name || 'Desconocido';
+
+          return {
+            ...attendance,
+            "date": attendance.date.split("T00:00:00.000Z").join(''),
+            ci: employee?.ci || 'Desconocido',
+            employee_name: employee ? `${employee.name} ${employee.surnames}` : 'Desconocido',
+            department,
+            position,
+          };
+        });
+
+        setOriginalAttendances(attendancesWithDetails); // Guardar los datos originales
+        setFilteredAttendances(attendancesWithDetails); // Inicializar la lista filtrada
+      }
+    };
+
+    fetchAttendancesForDate();
   };
 
   return (
@@ -192,7 +221,7 @@ export default function Attendances() {
       )}
       <AddButton openModal={openAddModal} />
       <Modal isOpen={isModalOpen} onClose={closeModals} title={currentAttendance ? "Editar asistencia" : "Registrar nueva asistencia"}>
-        <FormAttendance employees={employeesData} onSubmit={handleAddAttendance} current={currentAttendance} />
+        <FormAttendance employees={employeesData} onSubmit={updateAttendances} onClose={closeModals} current={currentAttendance} />
       </Modal>
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}

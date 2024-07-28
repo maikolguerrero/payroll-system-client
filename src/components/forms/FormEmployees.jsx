@@ -3,14 +3,8 @@ import { Contexto } from "../../context/Contexto";
 import formValidation from "../../validations/formValidation";
 import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 
-const FormEmployees = ({ employee, onClose, updates }) => {
-  const {
-    employeesData,
-    setEmployeesData,
-    departmentsData,
-    positionsData,
-    peticionPost,
-  } = useContext(Contexto);
+const FormEmployees = ({ employee, onClose, onSubmit }) => {
+  const { departmentsData, positionsData, peticionPost } = useContext(Contexto);
 
   const [values, setValues] = useState({
     ci: employee ? employee.ci : "",
@@ -35,26 +29,6 @@ const FormEmployees = ({ employee, onClose, updates }) => {
     });
   };
 
-  const handleUpdate = (update) => {
-    let array = employeesData;
-    for (let i = 0; i < array.length; i++) {
-      if (array[i]._id === update._id) {
-        array[i] = update;
-      }
-    }
-    setEmployeesData(array)
-    updates(array);
-    onClose();
-  };
-
-  const handleCreate = (create) => {
-    let array = employeesData;
-    array.push(create);
-    setEmployeesData(array)
-    updates(array);
-    onClose();
-  };
-
   const validation = () => {
     for (let key in values) {
       let error = formValidation.validateText(values[key].toString());
@@ -65,38 +39,30 @@ const FormEmployees = ({ employee, onClose, updates }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validate = validation();
-    if (validate) alertInfo(validate);
+    if (validate) return alertInfo(validate);
+
+    let respuesta;
 
     if (employee) {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         `http://localhost:3000/api/employees/${employee._id}`,
         "PUT",
         values
       );
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        /*onSubmit()*/
-        handleUpdate(respuesta.employee)
-        return 
-      } else {
-        alert("Existio un error revisa la consola");
-        return console.log(respuesta);
-      }
     } else {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         "http://localhost:3000/api/employees",
         "POST",
         values
       );
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        /*onSubmit()*/
-        handleCreate(respuesta.employee)
-        return
-      } else {
-        alertError("Existe un error revisa la consola");
-        return console.log(respuesta);
-      }
+    }
+
+    if (respuesta.message) {
+      alertConfirm(respuesta.message);
+      onSubmit();
+      onClose();
+    } else {
+      alertError(respuesta.error);
     }
   };
 

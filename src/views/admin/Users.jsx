@@ -20,7 +20,8 @@ const ITEMS_PER_PAGE = 10; // Número de elementos por página
 export default function Users() {
   const { peticionGet, users, setUsers, peticionDelete } = useContext(Contexto);
 
-  const [filteredUsers, setFilteredUsers] = useState(users);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [originalUsers, setOriginalUsers] = useState([]); // Datos originales
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -33,6 +34,8 @@ export default function Users() {
         "GET"
       );
       setUsers(respuesta);
+      setOriginalUsers(respuesta); // Guardar los datos originales
+      setFilteredUsers(respuesta);
     };
 
     realizarPeticion();
@@ -40,6 +43,7 @@ export default function Users() {
 
   useEffect(() => {
     setFilteredUsers(users);
+    setOriginalUsers(users);
   }, [users]);
 
   const handleSearch = (query) => {
@@ -59,8 +63,8 @@ export default function Users() {
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+  const currentItems = filteredUsers?.length == 0 ? [] : filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = filteredUsers?.length == 0 ? [] : Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -81,32 +85,54 @@ export default function Users() {
     setIsDeleteModalOpen(true);
   };
 
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
   const closeModals = () => {
     setIsModalOpen(false);
     setIsDeleteModalOpen(false);
   };
 
+
   const handleDelete = async () => {
-    setFilteredUsers(filteredUsers.filter((item) => item._id !== currentUser._id));
+    setUsers(
+      users.filter((user) => user._id !== currentUser._id)
+    );
+    setFilteredUsers(
+      filteredUsers.filter((user) => user._id !== currentUser._id)
+    );
+    setOriginalUsers(
+      originalUsers.filter((user) => user._id !== currentUser._id)
+    );
     // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/users/${currentUser._id}`,
       "DELETE"
     );
-    console.log(respuesta);
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
-      alertError("Ocurrio un Error Revisa la Consola");
+      alertError(respuesta.error);
     }
-    closeModals();
+    closeDeleteModal();
+  };
+
+  const updateUsers = async () => {
+    const respuesta = await peticionGet(
+      "http://localhost:3000/api/users/all",
+      "GET"
+    );
+    setOriginalUsers(respuesta);
+    setFilteredUsers(respuesta);
+    setUsers(respuesta);
   };
 
   return (
     <div className="p-4">
       <h1 className="text-2xl text-white font-bold mb-4 text-left">Usuarios</h1>
       <div className="mb-4 flex gap-4">
-        <SearchBar placeholder="Buscar usuarios..." onSearch={handleSearch} onReset={handleReset}/>
+        <SearchBar placeholder="Buscar usuarios..." onSearch={handleSearch} onReset={handleReset} />
       </div>
       {filteredUsers.length === 0 ? (
         <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
@@ -137,6 +163,7 @@ export default function Users() {
           user={currentUser}
           submit={currentUser ? "Actualizar" : "Registrar"}
           onClose={closeModals}
+          onSubmit={updateUsers}
         />
       </Modal>
       <ConfirmDeleteModal
