@@ -173,8 +173,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="p-8">
-        <h1 className="text-2xl text-white font-bold mb-4 text-left">
+      <div className="p-4">
+        <h1 className="text-2xl text-white font-bold text-left">
           Dashboard
         </h1>
         {/*<section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-12">
@@ -184,7 +184,7 @@ export default function Dashboard() {
         </section>*/}
       </div>
 
-      <section className="grid grid-cols-1 p-12">
+      <section className="grid grid-cols-1 p-8">
         <div className="bg-white p-4 rounded-xl flex gap-8 justify-center flex-col min-h-[400px] h-auto mb-12">
           <h3 className="text-xl text-black font-bold mb-4 text-center">
             Tabla de Salario por Cargos

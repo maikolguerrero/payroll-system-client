@@ -8,7 +8,8 @@ import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import FormDeductions from "../components/forms/primes/FormDeductions";
 import { Contexto } from "../context/Contexto";
 import { alertConfirm, alertError } from "../components/alerts/alerts";
-import { format } from "date-fns";
+import { set } from "date-fns";
+import { format } from 'date-fns';
 
 const columns = [
   { label: "Tipo", accessor: "type" },
@@ -47,10 +48,23 @@ export default function PerceptionsDeductions() {
         "http://localhost:3000/api/deductions/all",
         "GET"
       );
-      setPerceptionsData(respuesta);
-      setDeductionsData(respuesta2);
-      setOriginalData({ perceptions: respuesta, deductions: respuesta2 });
-      setFiltered(respuesta);
+      const perceptions = respuesta.map(perception => {
+        return {
+          ...perception,
+          "date": perception.date.split("T00:00:00.000Z").join(''),
+        };
+      });
+
+      const deductions = respuesta2.map(deduction => {
+        return {
+          ...deduction,
+          "date": deduction.date.split("T00:00:00.000Z").join(''),
+        };
+      });
+
+      setPerceptionsData(perceptions);
+      setDeductionsData(deductions);
+      setOriginalData({ perceptions, deductions });
     };
 
     realizarPeticion();
@@ -58,17 +72,9 @@ export default function PerceptionsDeductions() {
 
   useEffect(() => {
     if (title === "Percepciones") {
-      const mappedData = perceptionsData.map((item) => ({
-        ...item,
-        date: format(new Date(item.date), 'dd/MM/yyyy'), // Formatear la fecha prime
-      }));
-      setFiltered(mappedData);
+      setFiltered(perceptionsData);
     } else {
-      const mappedData = deductionsData.map((item) => ({
-        ...item,
-        date: format(new Date(item.date), 'dd/MM/yyyy'), // Formatear la fecha prime
-      }));
-      setFiltered(mappedData);
+      setFiltered(deductionsData);
     }
   }, [perceptionsData, deductionsData, title]);
 
@@ -97,22 +103,6 @@ export default function PerceptionsDeductions() {
     setCurrentPage(1); // Resetea la página actual al reiniciar
   };
 
-  const updates = (value) => {
-    if (title === "Percepciones") {
-      const mappedData = perceptionsData.map((item) => ({
-        ...item,
-        date: format(new Date(item.date), 'dd/MM/yyyy'), // Formatear la fecha prime
-      }));
-      setFiltered(mappedData);
-    } else {
-      const mappedData = deductionsData.map((item) => ({
-        ...item,
-        date: format(new Date(item.date), 'dd/MM/yyyy'), // Formatear la fecha prime
-      }));
-      setFiltered(mappedData);
-    }
-  };
-
   const handleChangeType = (value) => {
     setTitle(value);
     if (value === "Percepciones") {
@@ -131,34 +121,13 @@ export default function PerceptionsDeductions() {
     setIsModalOpen(true);
   };
 
-  const closeModals = () => {
-    setIsModalOpen(false);
+  const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDelete = async () => {
-    // Lógica de eliminación
-    let respuesta = "";
-    if (title === "Percepciones") {
-      respuesta = await peticionDelete(
-        `http://localhost:3000/api/perceptions/${current._id}`,
-        "DELETE"
-      );
-      setPerceptionsData(filtered.filter((item) => item._id !== current._id));
-    } else {
-      respuesta = await peticionDelete(
-        `http://localhost:3000/api/deductions/${current._id}`,
-        "DELETE"
-      );
-      setDeductionsData(filtered.filter((item) => item._id !== current._id));
-    }
-    console.log(respuesta);
-    if (respuesta.message) {
-      alertConfirm(respuesta.message);
-    } else {
-      alertError("Ocurrio un Error Revisa la Consola");
-    }
-    closeModals();
+  const closeModals = () => {
+    setIsModalOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
   const openDeleteModal = (item) => {
@@ -169,6 +138,68 @@ export default function PerceptionsDeductions() {
   const openEditModal = (item) => {
     setCurrent(item);
     setIsModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    setFiltered(filtered.filter((item) => item._id !== current._id));
+    // Lógica de eliminación
+    let respuesta = "";
+    if (title === "Percepciones") {
+      respuesta = await peticionDelete(
+        `http://localhost:3000/api/perceptions/${current._id}`,
+        "DELETE"
+      );
+    } else {
+      respuesta = await peticionDelete(
+        `http://localhost:3000/api/deductions/${current._id}`,
+        "DELETE"
+      );
+    }
+    if (respuesta.message) {
+      alertConfirm(respuesta.message);
+    } else {
+      alertError(respuesta.error);
+    }
+    closeModals();
+  };
+
+  const updateItems = async () => {
+    let respuesta = "";
+    let perceptions = "";
+    let deductions = "";
+    if (title === "Percepciones") {
+      respuesta = await peticionGet(
+        "http://localhost:3000/api/perceptions/all",
+        "GET"
+      );
+      perceptions = respuesta.map(perception => {
+        return {
+          ...perception,
+          "date": perception.date.split("T00:00:00.000Z").join(''),
+        };
+      });
+      setPerceptionsData(perceptions);
+    } else {
+      respuesta = await peticionGet(
+        "http://localhost:3000/api/deductions/all",
+        "GET"
+      );
+
+      deductions = respuesta.map(deduction => {
+        return {
+          ...deduction,
+          "date": deduction.date.split("T00:00:00.000Z").join(''),
+        };
+      });
+      setDeductionsData(deductions);
+    }
+
+    setOriginalData({
+      ...title === "Percepciones" ? perceptions : deductions,
+      perceptions: title === "Percepciones" ? items : [],
+      deductions: title !== "Percepciones" ? items : [],
+    });
+    setFiltered(items);
   };
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
@@ -224,10 +255,8 @@ export default function PerceptionsDeductions() {
             submit={current ? "Editar" : "Agregar "}
             current={current}
             table={title}
-            setPerceptionsData={setPerceptionsData}            
-            setDeductionsData={setDeductionsData}
             onClose={closeModals}
-            updates={updates}
+            onSubmit={updateItems}
           />
         </Modal>
 

@@ -6,10 +6,9 @@ import { alertConfirm, alertError, alertInfo } from "../../alerts/alerts";
 import { Contexto } from "../../../context/Contexto";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import PDF from "../../PDF";
-import PDF2 from "../../PDF2";
 
-export default function FormEmployeesOne({ onClose }) {
-  const { peticionGet, peticionPost } = useContext(Contexto);
+export default function FormEmployeesOne() {
+  const { peticionGet, peticionPost, company } = useContext(Contexto);
 
   const [values, setValues] = useState({
     employe: "",
@@ -93,7 +92,6 @@ export default function FormEmployeesOne({ onClose }) {
       values
     );
     if (respuesta.message) {
-      console.log(respuesta);
       alertConfirm(respuesta.message);
       respuesta.payrolls.forEach(item => {
         employees.forEach(item2 => {
@@ -106,8 +104,7 @@ export default function FormEmployeesOne({ onClose }) {
       setInfo(respuesta.payrolls);
       return;
     } else {
-      alertError("Existio un error revisa la consola");
-      return console.log(respuesta);
+      alertError(respuesta.error);
     }
   };
 
@@ -277,7 +274,7 @@ export default function FormEmployeesOne({ onClose }) {
         <></>
       ) : (
         
-      <PDFDownloadLink document={<PDF data={info} empleados={employees}/>} fileName="ReporteNominaEmpleado.pdf">
+      <PDFDownloadLink document={<PDF data={info} empleados={employees} company={company} />} fileName="ReporteNominaEmpleado.pdf">
         {({ loading, url, error, blob }) =>
           loading ? (
             <button className="text-center w-full text-xl">Loading Document ...</button>

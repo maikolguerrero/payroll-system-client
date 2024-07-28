@@ -8,7 +8,7 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDF from "../../PDF";
 
 export default function FormPayrolldepartments() {
-  const { peticionGet, peticionPost } = useContext(Contexto);
+  const { peticionGet, peticionPost, company } = useContext(Contexto);
 
   const [values, setValues] = useState({
     department: "",
@@ -98,7 +98,6 @@ export default function FormPayrolldepartments() {
       values
     );
     if (respuesta.message) {
-      console.log(respuesta);
       alertConfirm(respuesta.message);
       if (respuesta.message === "Se generaron algunas nóminas con errores.") {
         return alertError(respuesta.message);
@@ -114,15 +113,14 @@ export default function FormPayrolldepartments() {
       setInfo(respuesta.payrolls);
       return;
     } else {
-      alertError("Existio un error revisa la consola");
-      return console.log(respuesta);
+      return alertError(respuesta.error);
     }
   };
 
   return (
     <>
       <form className="p-8 flex flex-col items-center" onSubmit={handleSubmit}>
-      <div className="grid grid-cols-2 gap-x-12 w-full">
+        <div className="grid grid-cols-2 gap-x-12 w-full">
           {/* Campo Departamento */}
           <div className="mb-4">
             <label
@@ -278,7 +276,7 @@ export default function FormPayrolldepartments() {
         </div>
         <div className="flex gap-8">
           <button className="rounded-xl bg-principalAzulTono5 px-12 py-2 mt-12 text-white text-xl">
-          Generar Nómina
+            Generar Nómina
           </button>
         </div>
       </form>
@@ -286,7 +284,7 @@ export default function FormPayrolldepartments() {
       {info === null ? (
         <></>
       ) : (
-        <PDFDownloadLink document={<PDF data={info}/>} fileName="ReporteNominaEmpleado.pdf">
+        <PDFDownloadLink document={<PDF data={info} company={company} />} fileName="ReporteNominaEmpleado.pdf">
           {({ loading, url, error, blob }) =>
             loading ? (
               <button className="text-center w-full text-xl">Loading Document ...</button>

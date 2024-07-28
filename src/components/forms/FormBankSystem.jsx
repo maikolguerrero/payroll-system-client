@@ -1,11 +1,10 @@
-import { Label, TextInput } from "flowbite-react";
 import React, { useContext, useEffect, useState } from "react";
 import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 import formValidation from "../../validations/formValidation";
 import { Contexto } from "../../context/Contexto";
 
-export default function FormBankSystem({ submit, bank, onClose }) {
-  const { peticionPost, banksData, setBanksData } = useContext(Contexto)
+export default function FormBankSystem({ submit, bank, onClose, onSubmit }) {
+  const { peticionPost } = useContext(Contexto)
 
   const [values, setValues] = useState({
     name: bank ? bank.name : "",
@@ -20,24 +19,6 @@ export default function FormBankSystem({ submit, bank, onClose }) {
     });
   };
 
-  
-  const handleUpdate = (update) => {
-    let array = banksData
-    for (let i = 0; i < array.length; i++) {
-      if (array[i]._id === update._id) {
-        array[i] = update
-      }
-    }
-    console.log(array)
-    setBanksData(array)
-  }
-
-  const handleCreate = (create) => {
-    let array = banksData
-    array.push(create);
-    setBanksData(array)
-  }
-
   const validation = () => {
     for (let key in values) {
       let error = formValidation.validateText(values[key].toString());
@@ -49,35 +30,29 @@ export default function FormBankSystem({ submit, bank, onClose }) {
     e.preventDefault();
     const validate = validation();
     if (validate) return alertInfo(validate);
-    
+
+    let respuesta;
+
     if (bank) {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         `http://localhost:3000/api/banks/${bank._id}`,
         "PUT",
         values
       );
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        handleUpdate(respuesta.bank);
-        return onClose();
-      } else {
-        alert("Existio un error revisa la consola");
-        return console.log(respuesta);
-      }
     } else {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         "http://localhost:3000/api/banks",
         "POST",
         values
       );
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        handleCreate(respuesta.bank)
-        return onClose();
-      } else {
-        alertError("Existe un error revisa la consola");
-        return console.log(respuesta);
-      }
+    }
+
+    if (respuesta.message) {
+      alertConfirm(respuesta.message);
+      onSubmit();
+      onClose();
+    } else {
+      alertError(respuesta.error);
     }
   };
 

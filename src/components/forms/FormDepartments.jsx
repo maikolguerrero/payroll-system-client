@@ -55,8 +55,7 @@ const FormDepartments = ({ department, onClose, onSubmit }) => {
       onSubmit();
       onClose();
     } else {
-      alertError("Ocurrió un error. Revisa la consola.");
-      console.log(respuesta);
+      alertError(respuesta.error);
     }
   };
 

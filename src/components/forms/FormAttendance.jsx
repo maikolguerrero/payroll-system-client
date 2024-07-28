@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import SearchBar from '../../components/SearchBar';
-import { format } from 'date-fns';
 import { Contexto } from '../../context/Contexto';
 import { alertConfirm, alertError, alertInfo } from '../alerts/alerts';
 import formValidation from '../../validations/formValidation';
 
-export default function FormAttendance({ employees, current }) {
+export default function FormAttendance({ employees, current, onClose, onSubmit }) {
   const { peticionPost } = useContext(Contexto);
 
   const [values, setValues] = useState({
@@ -14,13 +13,6 @@ export default function FormAttendance({ employees, current }) {
     entry_time: current ? current.entry_time : "",
     exit_time: current ? current.exit_time : "",
   });
-
-  useEffect(() => {
-    setValues({
-      ...values,
-      "date": values.date.split("T00:00:00.000Z").join('')
-    });
-  }, [current]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,34 +33,29 @@ export default function FormAttendance({ employees, current }) {
     e.preventDefault();
     const validate = validation();
     if (validate) return alertInfo(validate);
-    
-    
+
+    let respuesta;
+
     if (current) {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         `http://localhost:3000/api/attendances/${current._id}`,
         "PUT",
         values
       );
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        return onClose();
-      } else {
-        alert("Existio un error revisa la consola");
-        return console.log(respuesta);
-      }
     } else {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         "http://localhost:3000/api/attendances",
         "POST",
         values
       );
-      if (respuesta.message) {
-        alertConfirm(respuesta.message);
-        return //onClose();
-      } else {
-        alertError("Existe un error revisa la consola");
-        return console.log(respuesta);
-      }
+    }
+
+    if (respuesta.message) {
+      alertConfirm(respuesta.message);
+      onSubmit();
+      onClose();
+    } else {
+      alertError(respuesta.error);
     }
   };
 
@@ -96,9 +83,9 @@ export default function FormAttendance({ employees, current }) {
               ))}
             </select>
           </div>
-          <div className="w-full md:flex-1 mt-4 md:mt-0">
+          {/* <div className="w-full md:flex-1 mt-4 md:mt-0">
             <SearchBar placeholder="Buscar empleado..." onSearch={(query) => { }} />
-          </div>
+          </div> */}
         </div>
       </div>
 

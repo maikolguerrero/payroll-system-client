@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 
-export default function Table({ columns, data, onEdit, onDelete }) {
+export default function Table({ columns, data, onEdit, onDelete, pdf, onDownloadPDF }) {
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -29,18 +29,23 @@ export default function Table({ columns, data, onEdit, onDelete }) {
                 </td>
               ))}
               <td className="px-4 py-4 text-right flex space-x-4 justify-end">
-                <button
-                  onClick={() => onEdit(item)}
-                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                >
-                  <FiEdit className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => onDelete(item)}
-                  className="font-medium text-red-600 dark:text-red-500 hover:underline"
-                >
-                  <FiTrash2 className="w-5 h-5" />
-                </button>
+
+                {pdf ? (
+                  <button onClick={() => onDownloadPDF(item)} className="text-green-500 hover:text-green-700 ml-4">Descargar PDF</button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => onEdit(item)}
+                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                      <FiEdit className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => onDelete(item)}
+                      className="font-medium text-red-600 dark:text-red-500 hover:underline"
+                    >
+                      <FiTrash2 className="w-5 h-5" />
+                    </button></>)}
               </td>
             </tr>
           ))}

@@ -26,7 +26,6 @@ export default function CreateTXT() {
       const response = await peticionPost(url, "POST", contenido);
       if (response.error) {
         alertError(response.error);
-        console.log(response.error);
       } else {
         alertConfirm(response.message);
         // Redirige al usuario para descargar el archivo
@@ -36,7 +35,6 @@ export default function CreateTXT() {
       }
     } catch (error) {
       alertError("Error al generar el archivo.");
-      console.log(error);
     }
   };
 

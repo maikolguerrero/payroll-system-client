@@ -17,7 +17,8 @@ export function ContextoProvider(props) {
   const [attendances, setAttendances] = useState([])
   const [admins, setAdmins] = useState([])
   const [company, setCompany] = useState([])
-  
+  const [payrollsData, setPayrollsData] = useState([])
+
   const peticionPost = async (url, metodo, contenido) => {
     try {
       const response = await fetch(url, {
@@ -28,12 +29,12 @@ export function ContextoProvider(props) {
         },
         body: JSON.stringify(contenido)
       })
-  
+
       if (!response.ok) {
         const { error } = await response.json();
         return { error };
       }
-      
+
       return response.json();
     } catch (error) {
       throw error;
@@ -49,12 +50,12 @@ export function ContextoProvider(props) {
           "Authorization": `Bearer ${token}`,
         },
       })
-  
+
       if (!response.ok) {
         const { error } = await response.json();
         return { error };
       }
-      
+
       return response.json();
     } catch (error) {
       throw error;
@@ -70,12 +71,12 @@ export function ContextoProvider(props) {
           "Authorization": `Bearer ${token}`,
         },
       })
-  
+
       if (!response.ok) {
         const { error } = await response.json();
         return { error };
       }
-      
+
       return response.json();
     } catch (error) {
       throw error;
@@ -96,7 +97,7 @@ export function ContextoProvider(props) {
       "http://localhost:3000/api/company",
       "GET"
     );
-    setCompany(respuesta)
+    setCompany(respuesta[0])
     return respuesta
   }
 
@@ -129,6 +130,10 @@ export function ContextoProvider(props) {
       "http://localhost:3000/api/departments/all",
       "GET"
     );
+    const payrolls = await peticionGet(
+      "http://localhost:3000/api/payrolls/all",
+      "GET"
+    );
     banksAccount.forEach(item => {
       banks.forEach(bank => {
         if (bank._id === item.bank_id) {
@@ -155,6 +160,7 @@ export function ContextoProvider(props) {
     setPerceptionsData(perceptions);
     setDeductionsData(deductions)
     setDepartmentsData(departments)
+    setPayrollsData(payrolls);
   };
 
   return (
@@ -188,7 +194,9 @@ export function ContextoProvider(props) {
       admins,
       verificarAdmin,
       verificarCompany,
-      company
+      company,
+      payrollsData,
+      setPayrollsData
     }}>
       {props.children}
     </Contexto.Provider>

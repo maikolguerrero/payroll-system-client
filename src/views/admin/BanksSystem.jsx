@@ -20,6 +20,7 @@ export default function BanksSystem() {
   const { banksData, setBanksData, peticionGet, peticionDelete } =
     useContext(Contexto);
 
+  const [banks, setBanks] = useState(banksData);
   const [filteredBanks, setFilteredBanks] = useState([]);
   const [originalBanksData, setOriginalBanksData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -75,6 +76,14 @@ export default function BanksSystem() {
     setIsModalOpen(true);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
   const openEditModal = (bank) => {
     setCurrentBank(bank);
     setIsModalOpen(true);
@@ -91,22 +100,33 @@ export default function BanksSystem() {
   };
 
   const handleDelete = async () => {
-    setFilteredBanks(
-      filteredBanks.filter((bank) => bank._id !== currentBank._id)
+    setBanks(
+      banks.filter((dept) => dept._id !== currentBank._id)
     );
-    setBanksData(filteredBanks.filter((bank) => bank._id !== currentBank._id))
+    setFilteredBanks(
+      filteredBanks.filter((dept) => dept._id !== currentBank._id)
+    );
+    // Lógica de eliminación
     const respuesta = await peticionDelete(
       `http://localhost:3000/api/banks/${currentBank._id}`,
       "DELETE"
     );
-    console.log(respuesta);
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
-      alertError("Ocurrio un Error Revisa la Consola");
+      alertError(respuesta.error);
     }
-    // Lógica de eliminación
-    closeModals();
+    closeDeleteModal();
+  };
+
+  const updateDepartmentData = async () => {
+    const respuesta = await peticionGet(
+      "http://localhost:3000/api/banks/all",
+      "GET"
+    );
+    setBanksData(respuesta);
+    setOriginalBanksData(respuesta);
+    setFilteredBanks(respuesta);
   };
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
@@ -117,10 +137,10 @@ export default function BanksSystem() {
   return (
     <div className="p-4">
       <h1 className="text-2xl text-white font-bold mb-4 text-left">
-        Bancos del Sistema
+        Bancos
       </h1>
       <div className="grid grid-cols-2 mb-8">
-        <SearchBar placeholder="Buscar bancos..." onSearch={handleSearch} onReset={handleReset}/>
+        <SearchBar placeholder="Buscar bancos..." onSearch={handleSearch} onReset={handleReset} />
       </div>
       {filteredBanks.length === 0 ? (
         <h3 className="text-2xl text-white font-bold mt-8 mb-4 text-center">
@@ -151,6 +171,7 @@ export default function BanksSystem() {
           bank={currentBank}
           submit={currentBank ? "Editar" : "Agregar "}
           onClose={closeModals}
+          onSubmit={updateDepartmentData}
         />
       </Modal>
       <ConfirmDeleteModal

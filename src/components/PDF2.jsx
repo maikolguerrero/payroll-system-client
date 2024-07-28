@@ -1,73 +1,145 @@
-import { Document, Text, Page, StyleSheet, View } from "@react-pdf/renderer";
+import React from 'react';
+import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
+// Definimos los estilos para el PDF
 const styles = StyleSheet.create({
   page: {
-    backgroundColor: "#E4E4E4",
     padding: 30,
+    fontFamily: 'Helvetica',
+  },
+  header: {
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+    marginHorizontal: 'auto',
+  },
+  companyName: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   title: {
-    fontSize: 24,
-    textAlign: "center",
-    fontWeight: "bold",
-    marginBottom: 15,
-  },
-  title2: {
-    fontSize: 20,
-    textAlign: "center",
-    marginBottom: 28,
-    color: "#00426F",
-  },
-  text: {
     fontSize: 18,
-  },
-  text2: {
-    fontSize: 18,
-    borderRadius: 10,
-    flexWrap: "wrap",
+    textAlign: 'center',
+    marginVertical: 15,
+    fontWeight: 'bold',
   },
   section: {
-    display: "flex",
-    flexDirection: "row",
-    margin: 6,
-    padding: 10,
-    gap: 10,
-    justifyContent: "center",
+    marginBottom: 20,
   },
-  bordes: {
-    borderBottom: 3,
-    borderTop: 3,
-    borderColor: "#000000",
-    backgroundColor: "#C5DEFA",
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+    paddingHorizontal: 5,
   },
-  parragraph: {
+  label: {
     fontSize: 12,
-    textAlign: "justify",
-    lineHeight: 1.5,
-    margin: 10,
+    fontWeight: 'bold',
+    width: '40%',  // Ajusta el ancho según sea necesario
   },
-  pageNumber: {
-    position: "absolute",
+  value: {
     fontSize: 12,
-    bottom: 30,
-    left: 0,
-    right: 0,
-    textAlign: "center",
-    color: "grey",
+    textAlign: 'right',
+    width: '60%',  // Ajusta el ancho según sea necesario
   },
-  espace: {
-    marginBottom: 40
-  }
+  footer: {
+    marginTop: 30,
+    textAlign: 'center',
+    fontSize: 10,
+    color: 'gray',
+  },
 });
 
-function PDF2({ data }) {
+const PDF2 = ({ data, empleados, company, perceptionsData, deductionsData }) => {
+  // Encuentra los datos del empleado
+  const employee = empleados.find(emp => emp._id === data.employee_id);
+
+  // Encuentra los datos de las percepciones y deducciones
+  const perceptions = data.perceptions.map(id => perceptionsData.find(p => p._id === id));
+  const deductions = data.deductions.map(id => deductionsData.find(d => d._id === id));
+
   return (
     <Document>
       <Page style={styles.page}>
-        <Text style={styles.title}>Reporte de nómina</Text>
-        
+        <View style={styles.header}>
+          {company.logo && (
+            <Image
+              style={styles.logo}
+              src={`http://localhost:3000/api/uploads/${company.logo}`}
+              alt="Company Logo"
+            />
+          )}
+          <Text style={styles.companyName}>{company.name}</Text>
+        </View>
+
+        <Text style={styles.title}>Recibo de Nómina</Text>
+
+        <View style={styles.section}>
+          <View style={styles.row}>
+            <Text style={styles.label}>Empleado: {employee ? `${employee.name} ${employee.surnames}` : 'Desconocido'}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>C.I: {employee.ci}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Periodo: {data.period}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Fecha de Inicio: {data.start_date}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Fecha de Fin: {data.end_date}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Fecha de Pago: {data.payment_date}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Salario Base: {data.base_salary}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Horas Extras: {data.overtime_hours}</Text>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+
+          <View style={styles.section}>
+            <Text style={styles.label}>Deducciones:</Text>
+            {deductions.map(deduction => (
+              <View style={styles.row} key={deduction._id}>
+                <Text style={styles.label}>{deduction.type}: {deduction.amount}</Text>
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.label}>Percepciones:</Text>
+            {perceptions.map(perception => (
+              <View style={styles.row} key={perception._id}>
+                <Text style={styles.label}>{perception.type}: {perception.amount}</Text>
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Salario Bruto: {data.gross_salary}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>Salario Neto: {data.net_salary}</Text>
+          </View>
+
+
+          <View style={styles.footer}>
+            <Text>Firma: ___________________________</Text>
+          </View>
+        </View>
       </Page>
     </Document>
   );
-}
+};
 
 export default PDF2;

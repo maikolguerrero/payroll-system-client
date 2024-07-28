@@ -116,11 +116,10 @@ const Departments = () => {
       `http://localhost:3000/api/departments/${currentDepartment._id}`,
       "DELETE"
     );
-    console.log(respuesta);
     if (respuesta.message) {
       alertConfirm(respuesta.message);
     } else {
-      alertError("Ocurrió un error. Revisa la consola.");
+      alertError(respuesta.error);
     }
     closeDeleteModal();
   };

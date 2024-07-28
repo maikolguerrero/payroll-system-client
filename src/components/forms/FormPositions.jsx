@@ -1,8 +1,26 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { alertConfirm, alertError, alertInfo } from "../alerts/alerts";
 import formValidation from "../../validations/formValidation";
 import { Contexto } from "../../context/Contexto";
+
+// Mapeo de abreviaciones a nombres completos
+const dayMap = {
+  Lun: "Lunes",
+  Mar: "Martes",
+  Mié: "Miércoles",
+  Jue: "Jueves",
+  Vie: "Viernes",
+  Sáb: "Sábado",
+  Dom: "Domingo",
+};
+
+// Función para convertir un string de abreviaciones en un array de nombres completos
+const convertStringToFullNamesArray = (abbreviationsString) => {
+  // Divide el string en un array de abreviaciones, eliminando espacios adicionales
+  const abbreviationsArray = abbreviationsString.split(',').map(abbr => abbr.trim());
+  // Convierte las abreviaciones a nombres completos usando el mapeo
+  return abbreviationsArray.map(abbr => dayMap[abbr] || abbr);
+};
 
 // Días completos de la semana
 const daysOfWeek = [
@@ -17,72 +35,51 @@ const daysOfWeek = [
 
 // Componente del formulario para la posición
 const FormPositions = ({ position, onSubmit, onClose }) => {
-  const { peticionPost, positionsData, setPositionsData } = useContext(Contexto)
+  const { peticionPost } = useContext(Contexto)
 
   const [values, setValues] = useState({
-    name: "",
-    description: "",
-    base_salary: "",
-    daily_hours: "",
-    work_days: [],
-    period: "",
+    name: position ? position.name : "",
+    description: position ? position.description : "",
+    base_salary: position ? position.base_salary : "",
+    daily_hours: position ? position.daily_hours : "",
+    // work_days: Array.isArray(position?.work_days) ? position.work_days : [],
+    work_days: position ? (position.work_days) ? convertStringToFullNamesArray(position.work_days) : [] : [],
+    period: position ? position.period : "",
   });
 
   // Cargar los valores iniciales si hay una posición proporcionada
-  useEffect(() => {
-    if (position) {
-      setValues({
-        name: position.name || "",
-        description: position.description || "",
-        base_salary: position.base_salary || "",
-        daily_hours: position.daily_hours || "",
-        work_days: Array.isArray(position.work_days)
-          ? position.work_days
-          : [],
-        period: position.period || "",
-      });
-    } else {
-      setValues({
-        name: "",
-        description: "",
-        base_salary: "",
-        daily_hours: "",
-        work_days: [],
-        period: "",
-      });
-    }
-  }, [position]);
+  // useEffect(() => {
+  //   if (position) {
+  //     setValues({
+  //       name: position.name || "",
+  //       description: position.description || "",
+  //       base_salary: position.base_salary || "",
+  //       daily_hours: position.daily_hours || "",
+  //       work_days: position ? (position.work_days) ? position.work_days : [] : [],
+  //       period: position.period || "",
+  //     });
+  //   }
+  // }, [position]);
 
   // Manejar cambios en los inputs del formulario
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
-      setValues((prevValues) => ({
-        ...prevValues,
-        work_days: checked
-          ? [...prevValues.work_days, value]
-          : prevValues.work_days.filter((day) => day !== value),
-      }));
+      handleCheckboxChange(value, checked);
     } else {
       setValues({ ...values, [name]: value });
     }
   };
 
-  const handleUpdate = (update) => {
-    let array = positionsData
-    for (let i = 0; i < array.length; i++) {
-      if (array[i]._id === update._id) {
-        array[i] = update
-      }
-    }
-    setPositionsData(array)
-  }
-
-  const handleCreate = (create) => {
-    let array = positionsData
-    array.push(create);
-    setPositionsData(array)
-  }
+  // Manejar el cambio de los días de trabajo seleccionados
+  const handleCheckboxChange = (value, checked) => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      work_days: checked
+        ? [...prevValues.work_days, value]
+        : prevValues.work_days.filter((day) => day !== value),
+    }));
+  };
 
   // Manejar la validación y el envío del formulario
   const handleSubmit = async (e) => {
@@ -100,38 +97,28 @@ const FormPositions = ({ position, onSubmit, onClose }) => {
     if (!validateHours) return alertInfo("Por favor ingrese las horas diarias.");
     if (!validatePeriod) return alertInfo("Por favor ingrese el periodo.");
 
+    let respuesta;
+
     if (position) {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         `http://localhost:3000/api/positions/${position._id}`,
         "PUT",
         values
       );
-      if (!respuesta.error) {
-        console.log(respuesta)
-        alertConfirm(respuesta.message);
-        /*onSubmit()*/
-        handleUpdate(respuesta.position);
-        return onClose();
-      } else {
-        console.log(respuesta.error)
-        alert("Existio un error revisa la consola");
-        return console.log(respuesta);
-      }
     } else {
-      const respuesta = await peticionPost(
+      respuesta = await peticionPost(
         "http://localhost:3000/api/positions",
         "POST",
         values
       );
-      if (respuesta.message === "Puesto creado exitosamente") {
-        alertConfirm(respuesta.message);
-        /*onSubmit()*/
-        handleCreate(respuesta.position);
-        return onClose();
-      } else {
-        alertError("Existe un error revisa la consola");
-        return console.log(respuesta);
-      }
+    }
+
+    if (respuesta.message === "Puesto actualizado exitosamente" || respuesta.message === "Puesto creado exitosamente") {
+      alertConfirm(respuesta.message);
+      onSubmit();
+      onClose();
+    } else {
+      alertError(respuesta.error);
     }
   };
 
@@ -258,23 +245,17 @@ const FormPositions = ({ position, onSubmit, onClose }) => {
 };
 
 // Componente para los checkboxes de los días de trabajo
-const CheckboxDay = ({ label, value, checked, onChange }) => {
-  return (
-    <div className="flex items-center">
-      <label htmlFor={value} className="font-medium mr-2">
-        {label}
-      </label>
-      <input
-        type="checkbox"
-        id={value}
-        name="daysOfWork"
-        value={value}
-        checked={checked}
-        onChange={onChange}
-        className="form-checkbox text-black h-5 w-5"
-      />
-    </div>
-  );
-};
+const CheckboxDay = ({ label, value, checked, onChange }) => (
+  <label className="flex items-center gap-2">
+    <input
+      type="checkbox"
+      value={value}
+      checked={checked}
+      onChange={onChange}
+      className="form-checkbox h-4 w-4 text-principalAzulTono5 focus:ring-principalAzulTono5"
+    />
+    {label}
+  </label>
+);
 
 export default FormPositions;
