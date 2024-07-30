@@ -220,17 +220,17 @@ export default function History() {
           />
         </>
       )}
-      <AddButton openModal={openAddModal} />
+      {/* <AddButton openModal={openAddModal} />
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
         title={currentPayroll ? "Editar nómina" : "Agregar Nómina"}
       >
-        {/* <FormPayroll
+        <FormPayroll
           payroll={currentPayroll}
           onSubmit={handleAddEditPayroll}
           onClose={closeModal}
-        /> */}
+        />
       </Modal>
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
@@ -238,7 +238,7 @@ export default function History() {
         onDelete={handleDelete}
         article="la"
         entityName="nómina"
-      />
+      /> */}
     </div>
   );
 };
