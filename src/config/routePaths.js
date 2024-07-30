@@ -11,6 +11,12 @@ const paths = {
   SETTINGS_PATH: "/settings",
   COMPANY_SETTINGS_PATH: "/company-settings",
   USER_PROFILE_PATH: "/user-profile",
+  USERS_PATH: "/users",
+  COMPANY_REGISTER_PATH: "/company-register",
+  LOGIN_PATH: "/login",
+  REGISTER_PATH: "/register",
+  BANKS_SYSTEM_PATH: "/banks-system",
+  HISTORY_PATH: "/history"
 };
 
 export default paths;
